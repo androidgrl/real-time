@@ -18,14 +18,9 @@ app.use(express.static('public'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//app.get('/', function (req, res){
-//res.sendFile(path.join(__dirname, '/public/index.html'));
-//console.log(host, '1111111111111111111111');
-//var host = req.headers.host;
-//res.render('/index', {
-//host: host
-//});
-//});
+app.get('/', function (req, res){
+  res.sendFile(path.join(__dirname, '/public/index.html'));
+});
 
 app.get('/admin-dashboard', function(req, res){
   var schedule = new Schedule();
