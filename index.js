@@ -6,25 +6,21 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const Schedule = require('./lib/schedule');
 const Slot = require('./lib/slot');
-//const redis = require('redis');
 const _ = require('lodash');
+//const redis = require('redis');
 //const client = redis.createClient(process.env.REDIS_URL);
 
 var redis = require("redis").createClient();
 
 if (process.env.REDISTOGO_URL) {
-
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
   var redis = require("redis").createClient(rtg.port, rtg.hostname);
-
   redis.auth(rtg.auth.split(":")[1]);
 } else {
   var client = require("redis").createClient(process.env.REDIS_URL);
   //var redis = require("redis").createClient();
 }
 
-//check with redis-cli, keys *, hgetall "polls"
-//flushall
 app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
@@ -131,3 +127,5 @@ io.on('connection', function(socket) {
 http.listen(process.env.PORT || 3000, function(){
   console.log('Your server is up and running on Port 3000. Good job!');
 });
+//check with redis-cli, keys *, hgetall "polls"
+//flushall
