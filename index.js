@@ -14,15 +14,27 @@ const _ = require('lodash');
 app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', function (req, res){
-  res.sendFile(path.join(__dirname, '/public/index.html'));
-});
+//app.get('/', function (req, res){
+  //res.sendFile(path.join(__dirname, '/public/index.html'));
+  //console.log(host, '1111111111111111111111');
+  //var host = req.headers.host;
+  //res.render('/index', {
+    //host: host
+  //});
+//});
 
 app.get('/admin-dashboard', function(req, res){
-  res.render('admin-dashboard', {
+  var id = 3;
+  res.redirect('/admin-dashboard/' + id);
+});
 
+app.get('/admin-dashboard/:id', function (req, res) {
+  var id = req.params.id;
+  res.render('admin-dashboard', {
+    id: id
   });
 });
 
@@ -101,19 +113,6 @@ io.on('connection', function(socket) {
     }
   });
 });
-
-// Keep track of vote counts
-function countVotes(votes) {
-  var result = _.reduce(votes, function(hash, choice, socketId){
-    if (hash[choice]) {
-      hash[choice] += 1;
-    } else {
-      hash[choice] = 1;
-    }
-    return hash;
-  }, {});
-  return result;
-}
 
 http.listen(process.env.PORT || 3000, function(){
   console.log('Your server is up and running on Port 3000. Good job!');
