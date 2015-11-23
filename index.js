@@ -90,7 +90,6 @@ app.get('/admin/:id', function (req, res) {
   });
 });
 
-
 io.on('connection', function(socket) {
   console.log('A user has connected.');
   console.log(io.engine.clientsCount + ' user(s) now connected.');
