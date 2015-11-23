@@ -79,12 +79,8 @@ app.post('/admin-dashboard/slots', function (req, res){
     var targetSchedule = JSON.parse(schedules[scheduleId]);
     targetSchedule.timeSlots.push(slot);
     client.hmset('schedules', scheduleId, JSON.stringify(targetSchedule));
-    res.render('admin-dashboard', {
-      host: host,
-      id: scheduleId,
-      schedule: targetSchedule
-    });
   });
+  res.status(200).send({slot});
 });
 
 app.get('/vote/:id', function (req, res) {
