@@ -1,9 +1,33 @@
 var socket = io();
-
 var voteCounts = document.getElementById('vote-counts');
 var pollResults = document.getElementById('poll-results');
 var endPollButton = document.getElementById('end-poll');
 var votingButtons = document.querySelectorAll('input[type="radio"]');
+
+function formData(){
+  return {
+    start: $('#start').val(),
+    end: $('#end').val(),
+    date: $('#date').val(),
+    comments: $('#comments').val(),
+    scheduleId: $('#schedule-id').val()
+  };
+}
+
+function postData(){
+  $.post('/admin-dashboard/slots',
+      formData(),
+      function(data){
+        console.log(data);
+        //$('#ideas').prepend(makeIdea(data));
+        //$('#title').val('');
+        //$('#body').val('');
+      });
+}
+
+$('document').ready(function(){
+  $('#submit').on('click', postData);
+});
 
 socket.on('socketId', function(socketId) {
   if (getCookie('socketid')) {
@@ -31,7 +55,7 @@ for (var i = 0; i < votingButtons.length; i++) {
 }
 
 //endPollButton.addEventListener('click', function () {
-  //socket.send('endPoll', this.dataset);
+//socket.send('endPoll', this.dataset);
 //});
 
 function getCookie(cname) {
