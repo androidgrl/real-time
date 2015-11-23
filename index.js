@@ -8,9 +8,6 @@ const bodyParser = require('body-parser');
 const Schedule = require('./lib/schedule');
 const Slot = require('./lib/slot');
 const _ = require('lodash');
-//const redis = require('redis');
-//const client = redis.createClient(process.env.REDIS_URL);
-
 
 if (process.env.REDISTOGO_URL) {
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
@@ -53,6 +50,13 @@ app.get('/admin-dashboard/:id', function (req, res) {
     });
   });
 });
+
+app.get('/scheduling-page/:id', function (req, res) {
+  var id = req.params.id;
+  console.log(req.params);
+});
+
+//"a03d103b037e33f2752f4a37b6dc3f85bebaa9db" => "{"id":"a03d103b037e33f2752f4a37b6dc3f85bebaa9db","schedulingPageUrl":"scheduling-page/4a34619d764072a4a74e08fec93ccd60d0686546","timeSlots":[]}"
 
 //app.post('/create', function (req, res){
 //var poll = new Poll();
