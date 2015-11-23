@@ -8,9 +8,6 @@ const bodyParser = require('body-parser');
 const Schedule = require('./lib/schedule');
 const Slot = require('./lib/slot');
 const _ = require('lodash');
-//const redis = require('redis');
-//const client = redis.createClient(process.env.REDIS_URL);
-
 
 if (process.env.REDISTOGO_URL) {
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
@@ -19,7 +16,7 @@ if (process.env.REDISTOGO_URL) {
 
   client.auth(rtg.auth.split(":")[1]);
 } else {
-  var redis = require("redis").createClient();
+  var redis = require("redis");
   var client = require("redis").createClient(process.env.REDIS_URL);
 }
 
@@ -54,22 +51,41 @@ app.get('/admin-dashboard/:id', function (req, res) {
   });
 });
 
-//app.post('/create', function (req, res){
-//var poll = new Poll();
-//var host = req.headers.host;
+app.get('/scheduling-page/:id', function (req, res) {
+  var id = req.params.id;
 
-//poll.question = req.body.question;
-//poll.addChoice(req.body.choice1);
-//poll.addChoice(req.body.choice2);
-//poll.addChoice(req.body.choice3);
-//console.log(poll, "#1 poll object");
-//client.hmset('polls', poll.id, JSON.stringify(poll));
+  client.hgetall('schedules', function(err, schedules){
+    var targetSchedule = _.find(schedules, function (schedule) {
+      return JSON.parse(schedule).schedulingPageId === req.params.id;
+    });
+    res.render('scheduling-page', {
+      schedule: JSON.parse(targetSchedule)
+    });
+  });
+});
 
-//res.render('create', {
-//poll: poll,
-//host: host
-//});
-//});
+app.post('/admin-dashboard/slots', function (req, res){
+  var slot = new Slot();
+  var host = req.headers.host;
+
+  slot.startTime = req.body.start;
+  slot.endTime = req.body.end;
+  slot.date = req.body.date;
+  slot.comments = req.body.comments;
+
+  var scheduleId = req.body.scheduleId;
+
+  client.hgetall('schedules', function(err, schedules){
+    var targetSchedule = JSON.parse(schedules[scheduleId]);
+    targetSchedule.timeSlots.push(slot);
+    client.hmset('schedules', scheduleId, JSON.stringify(targetSchedule));
+    res.render('admin-dashboard', {
+      host: host,
+      id: scheduleId,
+      schedule: targetSchedule
+    });
+  });
+});
 
 app.get('/vote/:id', function (req, res) {
   client.hgetall('polls', function(err, polls){
