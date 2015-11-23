@@ -6,12 +6,18 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const Schedule = require('./lib/schedule');
 const Slot = require('./lib/slot');
-const redis = require('redis');
+//const redis = require('redis');
 //const client = redis.createClient(process.env.REDIS_URL);
 const _ = require('lodash');
 
-var redis = require('redis');
-var client = redis.createClient(process.env.REDISCLOUD_URL, {no_ready_check: true});
+var redis = require("redis").createClient();
+if (process.env.REDISTOGO_URL) {
+  var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+  var redis = require("redis").createClient(rtg.port, rtg.hostname);
+  redis.auth(rtg.auth.split(":")[1]);
+} else {
+  var redis = require("redis").createClient();
+}
 
 //check with redis-cli, keys *, hgetall "polls"
 //flushall
