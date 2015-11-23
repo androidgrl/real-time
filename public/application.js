@@ -18,10 +18,11 @@ function postData(){
   $.post('/admin-dashboard/slots',
       formData(),
       function(data){
-        console.log(data);
-        //$('#ideas').prepend(makeIdea(data));
-        //$('#title').val('');
-        //$('#body').val('');
+        $('#slots').append('<p>' + data.slot.comments + '</p>');
+        $('#start').val('');
+        $('#end').val('');
+        $('#date').val('');
+        $('#comments').val('');
       });
 }
 
