@@ -7,8 +7,13 @@ const bodyParser = require('body-parser');
 const Schedule = require('./lib/schedule');
 const Slot = require('./lib/slot');
 const redis = require('redis');
-const client = redis.createClient(process.env.REDIS_URL);
+//const client = redis.createClient(process.env.REDIS_URL);
 const _ = require('lodash');
+
+var url = require('url');
+var redisURL = url.parse(process.env.REDISCLOUD_URL);
+var client = redis.createClient(redisURL.port, redisURL.hostname, {no_ready_check: true});
+client.auth(redisURL.auth.split(":")[1]);
 
 //check with redis-cli, keys *, hgetall "polls"
 //flushall
