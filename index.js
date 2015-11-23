@@ -4,7 +4,8 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const path = require('path');
 const bodyParser = require('body-parser');
-const Poll = require('./lib/poll');
+const Schedule = require('./lib/schedule');
+const Slot = require('./lib/slot');
 const redis = require('redis');
 const client = redis.createClient(process.env.REDIS_URL);
 const _ = require('lodash');
@@ -18,46 +19,51 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //app.get('/', function (req, res){
-  //res.sendFile(path.join(__dirname, '/public/index.html'));
-  //console.log(host, '1111111111111111111111');
-  //var host = req.headers.host;
-  //res.render('/index', {
-    //host: host
-  //});
+//res.sendFile(path.join(__dirname, '/public/index.html'));
+//console.log(host, '1111111111111111111111');
+//var host = req.headers.host;
+//res.render('/index', {
+//host: host
+//});
 //});
 
 app.get('/admin-dashboard', function(req, res){
-  var id = 3;
+  var schedule = new Schedule();
+  var id = schedule.id;
+  client.hmset('schedules', id, JSON.stringify(schedule));
+
   res.redirect('/admin-dashboard/' + id);
 });
 
 app.get('/admin-dashboard/:id', function (req, res) {
   var id = req.params.id;
-  res.render('admin-dashboard', {
-    id: id
-  });
-});
-
-app.get('/new', function (req, res){
-  res.sendFile(path.join(__dirname, '/public/new.html'));
-});
-
-app.post('/create', function (req, res){
-  var poll = new Poll();
   var host = req.headers.host;
-
-  poll.question = req.body.question;
-  poll.addChoice(req.body.choice1);
-  poll.addChoice(req.body.choice2);
-  poll.addChoice(req.body.choice3);
-  console.log(poll, "#1 poll object");
-  client.hmset('polls', poll.id, JSON.stringify(poll));
-
-  res.render('create', {
-    poll: poll,
-    host: host
+  client.hgetall('schedules', function(err, schedules){
+    var targetSchedule = schedules[id];
+    res.render('admin-dashboard', {
+      host: host,
+      id: id,
+      schedule: JSON.parse(targetSchedule)
+    });
   });
 });
+
+//app.post('/create', function (req, res){
+//var poll = new Poll();
+//var host = req.headers.host;
+
+//poll.question = req.body.question;
+//poll.addChoice(req.body.choice1);
+//poll.addChoice(req.body.choice2);
+//poll.addChoice(req.body.choice3);
+//console.log(poll, "#1 poll object");
+//client.hmset('polls', poll.id, JSON.stringify(poll));
+
+//res.render('create', {
+//poll: poll,
+//host: host
+//});
+//});
 
 app.get('/vote/:id', function (req, res) {
   client.hgetall('polls', function(err, polls){
