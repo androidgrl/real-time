@@ -1,13 +1,13 @@
 {
-  "name": "Interpoll",
-  "version": "1.0.0",
+  "name": "RealTime",
+  "version": "2.0.0",
   "description": "Rich web application that leverages WebSockets with Node.js and Redis to push data to connected clients in real time",
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/nodemon/bin/nodemon.js index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Interpoll Team(Jamie Kawahara, Samson Brock, Dave Maurer)",
+  "author": "Jamie Kawahara",
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.14.1",
@@ -27,11 +27,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/imwithsam/interpoll.git"
+    "url": "git+https://github.com/androidgrl/real-time"
   },
   "keywords": [],
   "bugs": {
-    "url": "https://github.com/imwithsam/interpoll/issues"
+    "url": "https://github.com/androidgrl/real-time"
   },
-  "homepage": "https://github.com/imwithsam/interpoll#readme"
+  "homepage": "https://github.com/androidgrl/real-time"
 }

@@ -30,9 +30,9 @@ for (var i = 0; i < votingButtons.length; i++) {
   });
 }
 
-endPollButton.addEventListener('click', function () {
-  socket.send('endPoll', this.dataset);
-});
+//endPollButton.addEventListener('click', function () {
+  //socket.send('endPoll', this.dataset);
+//});
 
 function getCookie(cname) {
   var name = cname + '=';
