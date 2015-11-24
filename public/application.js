@@ -1,5 +1,9 @@
 const socket = io();
 
+socket.on('connect', function(){
+  console.log(socket.id, 'socket id');
+});
+
 function formData(){
   return {
     start: $('#start').val(),
@@ -36,6 +40,7 @@ function makeSlot(data) {
 
 socket.on('postSlots', function(data) {
   $('#scheduling-slots').append(makeSlot(data));
+  $('#slots').append(makeSlot(data));
 });
 
 $('document').ready(function(){
