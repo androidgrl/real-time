@@ -87,31 +87,13 @@ io.on('connection', function(socket) {
   console.log('A user has connected.');
   console.log(io.engine.clientsCount + ' user(s) now connected.');
 
-  socket.emit('socketId', socket.id);
-
   socket.on('disconnect', function() {
     console.log('A user has disconnected.');
   });
 
-  socket.on('message', function(channel, message) {
-    if (channel === 'voteCast') {
-      client.hgetall('polls', function(err, polls){
-        var targetPoll = JSON.parse(polls[message.pollId]);
-        if (targetPoll.isOpen) {
-          targetPoll.votes[message.socketId] = message.choice;
-          client.hmset('polls', message.pollId, JSON.stringify(targetPoll));
-          io.sockets.emit('voteCount', countVotes(targetPoll.votes));
-        }
-      });
-    }
-
-    if (channel === 'endPoll') {
-      console.log(message, 'message when endPoll');
-      client.hgetall('polls', function(err, polls){
-        var targetPoll = JSON.parse(polls[message.pollId]);
-        targetPoll.isOpen = false;
-        client.hmset('polls', message.pollId, JSON.stringify(targetPoll));
-      });
+  socket.on('message', function(channel, message){
+    if (channel==='slots'){
+      io.sockets.emit('postSlots', message);
     }
   });
 });
