@@ -27,7 +27,7 @@ function postData(){
 }
 
 function makeSlot(data) {
-  var compiled = _.template("<div data-id='<%= id %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><li>Start Time: <%= start %> </li><li>End Time: <%= end %> </li><li>Date: <%= date %></li><li>Comments: <%= comments %></li></div></br>");
+  var compiled = _.template("<div id='slot' data-id='<%= id %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><li>Start Time: <%= start %> </li><li>End Time: <%= end %> </li><li>Date: <%= date %></li><li>Comments: <%= comments %></li></div>");
   var newSlot = compiled({
     'start': data.slot.startTime,
     'end': data.slot.endTime,
