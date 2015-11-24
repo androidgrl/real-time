@@ -1,4 +1,11 @@
 const socket = io();
+const start = $('#start');
+const end = $('#end');
+const date = $('#date');
+const comments = $('#comments');
+const idOfSchedule = $('#schedule-id');
+const adminPageSlots = $('#slots');
+const scheduleingPageSlots = $('#scheduling-slots');
 
 socket.on('connect', function(){
   console.log(socket.id, 'socket id');
@@ -6,11 +13,11 @@ socket.on('connect', function(){
 
 function formData(){
   return {
-    start: $('#start').val(),
-    end: $('#end').val(),
-    date: $('#date').val(),
-    comments: $('#comments').val(),
-    scheduleId: $('#schedule-id').val()
+    start: start.val(),
+    end: end.val(),
+    date: date.val(),
+    comments: comments.val(),
+    scheduleId: idOfSchedule.val()
   };
 }
 
@@ -19,10 +26,10 @@ function postData(){
       formData(),
       function(data){
         socket.send('slots', data);
-        $('#start').val('');
-        $('#end').val('');
-        $('#date').val('');
-        $('#comments').val('');
+        start.val('');
+        end.val('');
+        date.val('');
+        comments.val('');
       });
 }
 
@@ -39,8 +46,8 @@ function makeSlot(data) {
 }
 
 socket.on('postSlots' + scheduleId , function(data) {
-  $('#scheduling-slots').append(makeSlot(data));
-  $('#slots').append(makeSlot(data));
+  scheduleingPageSlots.append(makeSlot(data));
+  adminPageSlots.append(makeSlot(data));
 });
 
 $('document').ready(function(){
