@@ -37,7 +37,14 @@
       </div>
       <div class="row">
         <div class="col-md-8" id="slots">
-          <h3>Slots:</h3>
+          <h3>Time Slots:</h3>
+          <% schedule.timeSlots.forEach(function(slot){ %>
+          <li>Start Time:<%= slot.startTime %></li>
+          <li>End Time:<%= slot.endTime %></li>
+          <li>Date:<%= slot.date %></li>
+          <li>Comments:<%= slot.comments %></li>
+            </br>
+            <% }); %>
         </div>
       </div>
     </div>
