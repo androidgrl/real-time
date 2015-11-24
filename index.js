@@ -83,27 +83,6 @@ app.post('/admin-dashboard/slots', function (req, res){
   res.status(200).send({slot});
 });
 
-app.get('/vote/:id', function (req, res) {
-  client.hgetall('polls', function(err, polls){
-    var targetPoll = _.find(polls, function (poll) {
-      return JSON.parse(poll).voterId === req.params.id;
-    });
-    res.render('votes', {
-      poll: JSON.parse(targetPoll)
-    });
-  });
-});
-
-app.get('/admin/:id', function (req, res) {
-  client.hgetall('polls', function(err, polls){
-    var targetPoll = polls[req.params.id];
-    res.render('admin', {
-      poll: JSON.parse(targetPoll),
-      votes: countVotes(targetPoll.votes)
-    });
-  });
-});
-
 io.on('connection', function(socket) {
   console.log('A user has connected.');
   console.log(io.engine.clientsCount + ' user(s) now connected.');
