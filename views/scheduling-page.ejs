@@ -17,10 +17,12 @@
           <div id="scheduling-slots">
             <h3>Time Slots:</h3>
             <% schedule.timeSlots.forEach(function(slot){ %>
+          <div data-id="<%= slot.id %>" data-start="<%= slot.startTime %>" data-end="<%= slot.endTime %>" data-date="<%= slot.date %>" data-comments="<%= slot.comments %>">
             <li>Start Time: <%= slot.startTime %></li>
             <li>End Time: <%= slot.endTime %></li>
             <li>Date: <%= slot.date %></li>
             <li>Comments: <%= slot.comments %></li>
+            </div>
             </br>
             <% }); %>
           </div>
