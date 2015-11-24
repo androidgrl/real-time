@@ -1,42 +1,20 @@
-<!doctype html>
-<html>
-  <head>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet"
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
-    integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
-    crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="/styles/custom.css">
-    <title>Scheduling Page</title>
-  </head>
-  <body>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <h1>Scheduling Page</h1>
-          <h4>For Schedule With ID:  <%= schedule.id %></h2>
-          <div id="scheduling-slots">
-            <h3>Time Slots:</h3>
-            <% schedule.timeSlots.forEach(function(slot){ %>
-          <div id="slot" data-id="<%= slot.id %>" data-start="<%= slot.startTime %>" data-end="<%= slot.endTime %>" data-date="<%= slot.date %>" data-comments="<%= slot.comments %>">
-            <li>Start Time: <%= slot.startTime %></li>
-            <li>End Time: <%= slot.endTime %></li>
-            <li>Date: <%= slot.date %></li>
-            <li>Comments: <%= slot.comments %></li>
-            </div>
-            <% }); %>
-          </div>
-        </div>
-      </div>
+<div class="row">
+<div class="col-md-12">
+  <h1>Scheduling Page</h1>
+  <h4>For Schedule With ID:  <%= schedule.id %></h4>
+  <div id="scheduling-slots">
+    <h3>Time Slots:</h3>
+    <% schedule.timeSlots.forEach(function(slot){ %>
+    <div id="slot" data-id="<%= slot.id %>" data-start="<%= slot.startTime %>" data-end="<%= slot.endTime %>" data-date="<%= slot.date %>" data-comments="<%= slot.comments %>">
+      <li>Start Time: <%= slot.startTime %></li>
+      <li>End Time: <%= slot.endTime %></li>
+      <li>Date: <%= slot.date %></li>
+      <li>Comments: <%= slot.comments %></li>
     </div>
-    <script>
-      var scheduleId = <%- JSON.stringify(schedule.id) %>;
-    </script>
-    <script src="/jquery.js"></script>
-    <script src="/lodash.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/application.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
-      integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
-  </body>
-</html>
+    <% }); %>
+  </div>
+</div>
+</div>
+<script>
+var scheduleId = <%- JSON.stringify(schedule.id) %>;
+</script>
