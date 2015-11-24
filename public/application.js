@@ -18,7 +18,6 @@ function postData(){
   $.post('/admin-dashboard/slots',
       formData(),
       function(data){
-        $('#slots').append(makeSlot(data));
         socket.send('slots', data);
         $('#start').val('');
         $('#end').val('');
@@ -28,7 +27,6 @@ function postData(){
 }
 
 function makeSlot(data) {
-  console.log(data);
   var compiled = _.template("<div data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><li>Start Time: <%= start %> </li><li>End Time: <%= end %> </li><li>Date: <%= date %></li><li>Comments: <%= comments %></li></div></br>");
   var newSlot = compiled({'start': data.slot.startTime,
     'end': data.slot.endTime,
@@ -38,7 +36,7 @@ function makeSlot(data) {
   return newSlot;
 }
 
-socket.on('postSlots', function(data) {
+socket.on('postSlots' + scheduleId , function(data) {
   $('#scheduling-slots').append(makeSlot(data));
   $('#slots').append(makeSlot(data));
 });
