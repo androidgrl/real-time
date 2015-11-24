@@ -15,7 +15,13 @@
           <h1>Scheduling Page</h1>
           <h4>For Schedule With ID:  <%= schedule.id %></h2>
           <div id="scheduling-slots">
-
+            <% schedule.timeSlots.forEach(function(slot){ %>
+            <li>Start Time:<%= slot.startTime %></li>
+            <li>End Time:<%= slot.endTime %></li>
+            <li>Date:<%= slot.date %></li>
+            <li>Comments:<%= slot.comments %></li>
+            </br>
+            <% }); %>
           </div>
         </div>
       </div>
