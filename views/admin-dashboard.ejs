@@ -39,17 +39,19 @@
         <div class="col-md-8" id="slots">
           <h3>Time Slots:</h3>
           <% schedule.timeSlots.forEach(function(slot){ %>
-          <li>Start Time: <%= slot.startTime %></li>
-          <li>End Time: <%= slot.endTime %></li>
-          <li>Date: <%= slot.date %></li>
-          <li>Comments: <%= slot.comments %></li>
+          <div data-id="<%= slot.id %>" data-start="<%= slot.startTime %>" data-end="<%= slot.endTime %>" data-date="<%= slot.date %>" data-comments="<%= slot.comments %>">
+            <li>Start Time: <%= slot.startTime %></li>
+            <li>End Time: <%= slot.endTime %></li>
+            <li>Date: <%= slot.date %></li>
+            <li>Comments: <%= slot.comments %></li>
+          </div>
             </br>
             <% }); %>
         </div>
       </div>
     </div>
     <script>
-      var scheduleId = <%- JSON.stringify(id) %>;
+var scheduleId = <%- JSON.stringify(id) %>;
     </script>
     <script src="/jquery.js"></script>
     <script src="/lodash.js"></script>
