@@ -1,4 +1,4 @@
-var socket = io();
+const socket = io();
 var voteCounts = document.getElementById('vote-counts');
 var pollResults = document.getElementById('poll-results');
 var endPollButton = document.getElementById('end-poll');
@@ -18,12 +18,23 @@ function postData(){
   $.post('/admin-dashboard/slots',
       formData(),
       function(data){
-        $('#slots').append('<p>' + data.slot.comments + '</p>');
+        $('#slots').append(makeSlot(data));
         $('#start').val('');
         $('#end').val('');
         $('#date').val('');
         $('#comments').val('');
       });
+}
+
+function makeSlot(data) {
+  console.log(data);
+  var compiled = _.template("<div data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><li>Start Time: <%= start %> </li><li>End Time: <%= end %> </li><li>Date: <%= date %></li><li>Comments: <%= comments %></li></div>");
+    var newSlot = compiled({'start': data.slot.startTime,
+                            'end': data.slot.endTime,
+                            'date': data.slot.date,
+                            'comments': data.slot.comments
+                        });
+    return newSlot;
 }
 
 $('document').ready(function(){
@@ -54,10 +65,6 @@ for (var i = 0; i < votingButtons.length; i++) {
     socket.send('voteCast', this.dataset);
   });
 }
-
-//endPollButton.addEventListener('click', function () {
-//socket.send('endPoll', this.dataset);
-//});
 
 function getCookie(cname) {
   var name = cname + '=';
