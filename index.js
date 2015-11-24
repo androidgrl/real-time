@@ -21,10 +21,12 @@ if (process.env.REDISTOGO_URL) {
 }
 
 app.set('view engine', 'ejs');
-
 app.use(express.static('public'));
-
+var ejsLayouts = require("express-ejs-layouts");
+app.use(ejsLayouts);
+app.set("views","./views");
 app.use(bodyParser.urlencoded({ extended: true }));
+
 
 app.get('/', function (req, res){
   res.sendFile(path.join(__dirname, '/public/index.html'));
