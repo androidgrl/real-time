@@ -6,7 +6,7 @@
     href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
     integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
     crossorigin="anonymous">
-    <title>Admin Dashboard</title>
+    <title>Scheduleing Page</title>
   </head>
   <body>
     <div class="container">
@@ -17,16 +17,19 @@
           <div id="scheduling-slots">
             <h3>Time Slots:</h3>
             <% schedule.timeSlots.forEach(function(slot){ %>
-            <li>Start Time:<%= slot.startTime %></li>
-            <li>End Time:<%= slot.endTime %></li>
-            <li>Date:<%= slot.date %></li>
-            <li>Comments:<%= slot.comments %></li>
+            <li>Start Time: <%= slot.startTime %></li>
+            <li>End Time: <%= slot.endTime %></li>
+            <li>Date: <%= slot.date %></li>
+            <li>Comments: <%= slot.comments %></li>
             </br>
             <% }); %>
           </div>
         </div>
       </div>
     </div>
+    <script>
+      var scheduleId = <%- JSON.stringify(schedule.id) %>;
+    </script>
     <script src="/jquery.js"></script>
     <script src="/lodash.js"></script>
     <script src="/socket.io/socket.io.js"></script>

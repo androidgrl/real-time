@@ -80,7 +80,7 @@ app.post('/admin-dashboard/slots', function (req, res){
     targetSchedule.timeSlots.push(slot);
     client.hmset('schedules', scheduleId, JSON.stringify(targetSchedule));
   });
-  res.status(200).send({slot});
+  res.status(200).send({slot: slot, scheduleId: scheduleId});
 });
 
 io.on('connection', function(socket) {
@@ -93,7 +93,7 @@ io.on('connection', function(socket) {
 
   socket.on('message', function(channel, message){
     if (channel==='slots'){
-      io.sockets.emit('postSlots', message);
+      io.sockets.emit('postSlots' + message.scheduleId, message);
     }
   });
 });
