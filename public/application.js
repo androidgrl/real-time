@@ -35,21 +35,37 @@ function postData(){
       });
 }
 
-function makeSlot(data) {
-  var compiled = _.template("<div class='radio' id='slot'><label><input class='radio-btn' type='radio' name='optradio' data-id='<%= id %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><p>Start Time: <%= start %></p><p>End Time: <%= end %> </p><p>Date: <%= date %></p><p>Comments: <%= comments %></p></label></div>");
+function makeScheduleSlot(data) {
+  var compiled = _.template("<div class='radio' id='slot'><label><input class='radio-btn' type='radio' name='optradio' data-id='<%= id %>' data-scheduleId='<%= scheduleId %>' data-active='<%= active %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><p>Start Time: <%= start %></p><p>End Time: <%= end %> </p><p>Date: <%= date %></p><p>Comments: <%= comments %></p></label></div>");
   var newSlot = compiled({
     'start': data.slot.startTime,
     'end': data.slot.endTime,
     'date': data.slot.date,
     'comments': data.slot.comments,
-    'id': data.slot.id
+    'id': data.slot.id,
+    'scheduleId': data.slot.scheduleId,
+    'active': data.slot.active
+  });
+  return newSlot;
+}
+
+function makeAdminSlot(data) {
+  var compiled = _.template("<div id='slot' data-id='<%= id %>' data-scheduleId='<%= scheduleId %>' data-active='<%= active %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><p>Start Time: <%= start %></p><p>End Time: <%= end %> </p><p>Date: <%= date %></p><p>Comments: <%= comments %></p></label></div>");
+  var newSlot = compiled({
+    'start': data.slot.startTime,
+    'end': data.slot.endTime,
+    'date': data.slot.date,
+    'comments': data.slot.comments,
+    'id': data.slot.id,
+    'scheduleId': data.slot.scheduleId,
+    'active': data.slot.active
   });
   return newSlot;
 }
 
 socket.on('postSlots' + scheduleId , function(data) {
-  scheduleingPageSlots.append(makeSlot(data));
-  adminPageSlots.append(makeSlot(data));
+  scheduleingPageSlots.append(makeScheduleSlot(data));
+  adminPageSlots.append(makeAdminSlot(data));
 });
 
 function sendSlot() {
@@ -57,9 +73,12 @@ function sendSlot() {
 }
 
 socket.on('disableSlot', function (data) {
-  $("input[data-id='" + data.id +"']").addClass('disabled');
-  $("input[data-id='" + data.id +"']").removeClass('radio-btn');
-  var parent = $("input[data-id='" + data.id +"']").parent();
+console.log(data, "=======================");
+  //$("input[data-id='" + data.id +"']").addClass('disabled');
+  //maybe instead, change the data attribute of active to false
+  //have a slot have an attribute active:boolean
+  //then save it to redis then when it refreshes then it'll know if it's active or not
+  //add branching in the view
 });
 
 $('document').ready(function(){

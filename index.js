@@ -74,6 +74,7 @@ app.post('/admin-dashboard/slots', function (req, res){
   slot.endTime = req.body.end;
   slot.date = req.body.date;
   slot.comments = req.body.comments;
+  slot.scheduleId = req.body.scheduleId;
 
   var scheduleId = req.body.scheduleId;
 
@@ -98,8 +99,14 @@ io.on('connection', function (socket){
       io.sockets.emit('postSlots' + message.scheduleId, message);
     }
     if (channel==='selectSlot') {
-      //when the slot gets sent here, i want to add the class disabled to that button
-      //on all pages, i have the id of the slot, and for every slot, if it has that id then disable it
+      //I want to change the slot to not active and save it in redis
+      //then add branching to the view that checks for this and adds the class
+      //disabled when it is inactive for page refreshing
+      //then for dynamically updating, dynamically add the class throught sockets.emit
+      //and dynamically update the data attribute
+
+      //var targetSlot =
+      console.log(message, "++++++++++++++++");
       io.sockets.emit('disableSlot', message);
     }
   });
