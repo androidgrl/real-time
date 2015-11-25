@@ -9,3 +9,7 @@ div#slot {
 p {
     margin: 0px;
 }
+
+.grey {
+    background-color: grey;
+}

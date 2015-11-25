@@ -60,6 +60,7 @@ app.get('/scheduling-page/:id', function (req, res){
     var targetSchedule = _.find(schedules, function (schedule) {
       return JSON.parse(schedule).schedulingPageId === req.params.id;
     });
+    console.log(targetSchedule);
     res.render('scheduling-page', {
       schedule: JSON.parse(targetSchedule)
     });
@@ -74,6 +75,7 @@ app.post('/admin-dashboard/slots', function (req, res){
   slot.endTime = req.body.end;
   slot.date = req.body.date;
   slot.comments = req.body.comments;
+  slot.scheduleId = req.body.scheduleId;
 
   var scheduleId = req.body.scheduleId;
 
@@ -98,9 +100,31 @@ io.on('connection', function (socket){
       io.sockets.emit('postSlots' + message.scheduleId, message);
     }
     if (channel==='selectSlot') {
-      //when the slot gets sent here, i want to add the class disabled to that button
-      //on all pages, i have the id of the slot, and for every slot, if it has that id then disable it
-      io.sockets.emit('disableSlot', message);
+      //I want to change the slot to not active and save it in redis
+      //then add branching to the view that checks for this and adds the class
+      //disabled when it is inactive for page refreshing
+      //then for dynamically updating, dynamically add the class throught sockets.emit
+      //and dynamically update the data attribute
+      //message = { id: '6def3b3b75c35332ac59dfa8f73825322b7b1464',
+      //scheduleid: '5062b0232a646432bf59bc3bfedc5e5add1c7d17',
+      //active: 'true',
+      //start: 'b',
+      //end: 'b',
+      //date: 'b',
+      //comments: 'b' }
+      //var targetSchedule = _.find(schedules, function (schedule) {
+      //return JSON.parse(schedule).schedulingPageId === req.params.id;
+      //});
+      //message.scheduleid**************because the dataset will lowercase everything
+      client.hgetall('schedules', function (err, schedules){
+        var targetSchedule = JSON.parse(schedules[message.scheduleid]);
+        var targetTimeSlot = _.find(targetSchedule.timeSlots, function (slot) {
+          return slot.id === message.id;
+        });
+        targetTimeSlot.active = false;
+        client.hmset('schedules', message.scheduleid, JSON.stringify(targetSchedule));
+        socket.broadcast.emit('disableSlot', targetTimeSlot);
+      });
     }
   });
 });
