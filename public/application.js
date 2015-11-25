@@ -73,12 +73,10 @@ function sendSlot() {
 }
 
 socket.on('disableSlot', function (data) {
-console.log(data, "=======================");
-  //$("input[data-id='" + data.id +"']").addClass('disabled');
-  //maybe instead, change the data attribute of active to false
-  //have a slot have an attribute active:boolean
-  //then save it to redis then when it refreshes then it'll know if it's active or not
+  console.log(data, "=======================datacomingintodisableslotchannel");
+  $("input[data-id='" + data.id +"']").addClass('disabled');
   //add branching in the view
+  //the data-active is not being updated after refresh
 });
 
 $('document').ready(function(){
