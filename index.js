@@ -100,8 +100,13 @@ io.on('connection', function (socket){
   });
 });
 
-http.listen(process.env.PORT || 3000, function (){
-  console.log('Your server is up and running on Port 3000. Good job!');
-});
+if(!module.parent){
+  console.log(process.env.PORT);
+  http.listen(process.env.PORT || 3000, function (){
+    console.log('Your server is up and running on Port 3000. Good job!');
+  });
+}
+
+module.exports = app;
 //check with redis-cli, keys *, hgetall "polls"
 //flushall
