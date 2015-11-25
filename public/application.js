@@ -7,6 +7,7 @@ const idOfSchedule = $('#schedule-id');
 const adminPageSlots = $('#slots');
 const scheduleingPageSlots = $('#scheduling-slots');
 const radioButtons = $('.radio-btn');
+const submit = $('#submit');
 
 socket.on('connect', function(){
   console.log(socket.id, 'socket id');
@@ -56,12 +57,13 @@ function sendSlot() {
 }
 
 socket.on('disableSlot', function (data) {
-  console.log(data, "===================== data to disable");
+  $("input[data-id='" + data.id +"']").addClass('disabled');
+  $("input[data-id='" + data.id +"']").removeClass('radio-btn');
+  var parent = $("input[data-id='" + data.id +"']").parent();
 });
 
 $('document').ready(function(){
-  $('#submit').on('click', postData);
-  $('#slots').delegate('.radio-btn', 'click', sendSlot);
-  $('#scheduling-slots').delegate('.radio-btn', 'click', sendSlot);
-  //radioButtons.on('click', sendSlot);
+  submit.on('click', postData);
+  adminPageSlots.delegate('.radio-btn', 'click', sendSlot);
+  scheduleingPageSlots.delegate('.radio-btn', 'click', sendSlot);
 });
