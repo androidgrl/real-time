@@ -60,7 +60,6 @@ app.get('/scheduling-page/:id', function (req, res){
     var targetSchedule = _.find(schedules, function (schedule) {
       return JSON.parse(schedule).schedulingPageId === req.params.id;
     });
-    console.log(targetSchedule);
     res.render('scheduling-page', {
       schedule: JSON.parse(targetSchedule)
     });
@@ -83,8 +82,8 @@ app.post('/admin-dashboard/slots', function (req, res){
     var targetSchedule = JSON.parse(schedules[scheduleId]);
     targetSchedule.timeSlots.push(slot);
     client.hmset('schedules', scheduleId, JSON.stringify(targetSchedule));
+    res.status(200).send({slot: slot, scheduleId: scheduleId, targetSchedule: targetSchedule});
   });
-  res.status(200).send({slot: slot, scheduleId: scheduleId});
 });
 
 io.on('connection', function (socket){
@@ -131,7 +130,6 @@ io.on('connection', function (socket){
 });
 
 if(!module.parent){
-  console.log(process.env.PORT);
   http.listen(process.env.PORT || 3000, function (){
     console.log('Your server is up and running on Port 3000. Good job!');
   });
