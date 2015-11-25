@@ -6,6 +6,7 @@ const comments = $('#comments');
 const idOfSchedule = $('#schedule-id');
 const adminPageSlots = $('#slots');
 const scheduleingPageSlots = $('#scheduling-slots');
+const radioButtons = $('.radio-btn');
 
 socket.on('connect', function(){
   console.log(socket.id, 'socket id');
@@ -34,7 +35,7 @@ function postData(){
 }
 
 function makeSlot(data) {
-  var compiled = _.template("<div class='radio' id='slot' data-id='<%= id %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><label><input type='radio' name='optradio'><p>Start Time: <%= start %></p><p>End Time: <%= end %> </p><p>Date: <%= date %></p><p>Comments: <%= comments %></p></label></div>");
+  var compiled = _.template("<div class='radio' id='slot'><label><input class='radio-btn' type='radio' name='optradio' data-id='<%= id %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><p>Start Time: <%= start %></p><p>End Time: <%= end %> </p><p>Date: <%= date %></p><p>Comments: <%= comments %></p></label></div>");
   var newSlot = compiled({
     'start': data.slot.startTime,
     'end': data.slot.endTime,
@@ -50,6 +51,17 @@ socket.on('postSlots' + scheduleId , function(data) {
   adminPageSlots.append(makeSlot(data));
 });
 
+function sendSlot() {
+  socket.send('selectSlot', this.dataset);
+}
+
+socket.on('disableSlot', function (data) {
+  console.log(data, "===================== data to disable");
+});
+
 $('document').ready(function(){
   $('#submit').on('click', postData);
+  $('#slots').delegate('.radio-btn', 'click', sendSlot);
+  $('#scheduling-slots').delegate('.radio-btn', 'click', sendSlot);
+  //radioButtons.on('click', sendSlot);
 });
