@@ -5,9 +5,9 @@
   <div id="scheduling-slots">
     <h3>Time Slots:</h3>
     <% schedule.timeSlots.forEach(function(slot){ %>
-    <div class="radio" id="slot" data-id="<%= slot.id %>" data-start="<%= slot.startTime %>" data-end="<%= slot.endTime %>" data-date="<%= slot.date %>" data-comments="<%= slot.comments %>">
+    <div class="radio" id="slot">
       <label>
-        <input type="radio" name="optradio">
+        <input class="radio-btn" type="radio" name="optradio" data-id="<%= slot.id %>" data-start="<%= slot.startTime %>" data-end="<%= slot.endTime %>" data-date="<%= slot.date %>" data-comments="<%= slot.comments %>">
         <p>Start Time: <%= slot.startTime %></p>
         <p>End Time: <%= slot.endTime %></p>
         <p>Date: <%= slot.date %></li>
