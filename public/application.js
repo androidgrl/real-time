@@ -25,47 +25,53 @@ function formData(){
 
 function postData(){
   $.post('/admin-dashboard/slots',
-      formData(),
-      function(data){
-        socket.send('slots', data);
-        start.val('');
-        end.val('');
-        date.val('');
-        comments.val('');
-      });
+         formData(),
+         function(data){
+           socket.send('slots', data);
+           start.val('');
+           end.val('');
+           date.val('');
+           comments.val('');
+         });
 }
 
-function makeScheduleSlot(data) {
-  var compiled = _.template("<div class='radio' id='slot'><label><input class='radio-btn' type='radio' name='optradio' data-id='<%= id %>' data-scheduleId='<%= scheduleId %>' data-active='<%= active %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><p>Start Time: <%= start %></p><p>End Time: <%= end %> </p><p>Date: <%= date %></p><p>Comments: <%= comments %></p></label></div>");
-  var newSlot = compiled({
-    'start': data.slot.startTime,
-    'end': data.slot.endTime,
-    'date': data.slot.date,
-    'comments': data.slot.comments,
-    'id': data.slot.id,
-    'scheduleId': data.slot.scheduleId,
-    'active': data.slot.active
+function makeScheduleSlots(data) {
+  data.targetSchedule.timeSlots.forEach(function (slot) {
+    var compiled = _.template("<div class='radio' id='slot'><label><input class='radio-btn' type='radio' name='optradio' data-id='<%= id %>' data-scheduleId='<%= scheduleId %>' data-active='<%= active %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><p>Start Time: <%= start %></p><p>End Time: <%= end %> </p><p>Date: <%= date %></p><p>Comments: <%= comments %></p></label></div>");
+    var newSlot = compiled({
+      'start': slot.startTime,
+      'end': slot.endTime,
+      'date': slot.date,
+      'comments': slot.comments,
+      'id': slot.id,
+      'scheduleId': slot.scheduleId,
+      'active': slot.active
+    });
+    scheduleingPageSlots.append(newSlot);
   });
-  return newSlot;
 }
 
-function makeAdminSlot(data) {
-  var compiled = _.template("<div id='slot' data-id='<%= id %>' data-scheduleId='<%= scheduleId %>' data-active='<%= active %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><p>Start Time: <%= start %></p><p>End Time: <%= end %> </p><p>Date: <%= date %></p><p>Comments: <%= comments %></p></label></div>");
-  var newSlot = compiled({
-    'start': data.slot.startTime,
-    'end': data.slot.endTime,
-    'date': data.slot.date,
-    'comments': data.slot.comments,
-    'id': data.slot.id,
-    'scheduleId': data.slot.scheduleId,
-    'active': data.slot.active
+function makeAdminSlots(data) {
+  data.targetSchedule.timeSlots.forEach(function (slot) {
+    var compiled = _.template("<div id='slot' data-id='<%= id %>' data-scheduleId='<%= scheduleId %>' data-active='<%= active %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><p>Start Time: <%= start %></p><p>End Time: <%= end %> </p><p>Date: <%= date %></p><p>Comments: <%= comments %></p></label></div>");
+    var newSlot = compiled({
+      'start': slot.startTime,
+      'end': slot.endTime,
+      'date': slot.date,
+      'comments': slot.comments,
+      'id': slot.id,
+      'scheduleId': slot.scheduleId,
+      'active': slot.active
+    });
+    adminPageSlots.append(newSlot);
   });
-  return newSlot;
 }
 
 socket.on('postSlots' + scheduleId , function(data) {
-  scheduleingPageSlots.append(makeScheduleSlot(data));
-  adminPageSlots.append(makeAdminSlot(data));
+  scheduleingPageSlots.html('');
+  makeScheduleSlots(data);
+  adminPageSlots.html('');
+  makeAdminSlots(data);
 });
 
 function sendSlot() {
