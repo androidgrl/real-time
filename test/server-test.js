@@ -54,9 +54,23 @@ describe('Server', () => {
         done();
       });
     });
+
+    it('should have a body with the page title', (done) => {
+      var title = 'Admin Dashboard';
+      var formTitle = 'Create New Time Slot'
+
+        this.request.get('/admin-dashboard', (error, response) => {
+          if (error) { done(error); }
+          assert(response.body.includes(title),
+              `"${response.body}" does not include "${title}".`);
+          assert(response.body.includes(formTitle),
+              `"${response.body}" does not include "${formTitle}".`);
+          done();
+        });
+    });
   });
 
-  describe('GET /admin-dashboard/3', () => {
+  describe('GET /admin-dashboard/schedule-id', () => {
     it('should return a 200', (done) => {
 
       var slot = {
@@ -67,16 +81,27 @@ describe('Server', () => {
         scheduleId: "97de4a6ac8bea261037eae55794218b612730aec"
       };
 
-      request.post('http://localhost:9876/admin-dashboard/slots', { form: slot }, function (error, response) {
-          });
+      this.request.post('/admin-dashboard/slots', { form: slot }, function (error, response) {
+      });
 
-      request.get('http://localhost:9876/admin-dashboard/97de4a6ac8bea261037eae55794218b612730aec', function (error, response) {
-          assert(response.body.includes("3pm"), "it should say the start");
-          assert(response.body.includes("1/2/16"), "it should say the data");
-          assert.equal(response.statusCode, 200);
-          done();
-          });
+      this.request.get('/admin-dashboard/97de4a6ac8bea261037eae55794218b612730aec', function (error, response) {
+        assert(response.body.includes("3pm"), "it should say the start");
+        assert(response.body.includes("1/2/16"), "it should say the data");
+        assert.equal(response.statusCode, 200);
+        done();
+      });
 
+    });
+  });
+
+  describe('GET /scheduling-page/schedule-id', () => {
+    it('should return a 200', (done) => {
+      this.request.get('/scheduling-page/0166991a734ae5b1ef7a5cb31d52cbb595182899', function (error, response) {
+
+        assert(response.body.includes("Start Time: a"), "it shoud say the start time");
+        assert.equal(response.statusCode, 200);
+        done();
+      });
     });
   });
 });
