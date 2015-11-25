@@ -97,6 +97,11 @@ io.on('connection', function (socket){
     if (channel==='slots'){
       io.sockets.emit('postSlots' + message.scheduleId, message);
     }
+    if (channel==='selectSlot') {
+      //when the slot gets sent here, i want to add the class disabled to that button
+      //on all pages, i have the id of the slot, and for every slot, if it has that id then disable it
+      io.sockets.emit('disableSlot', message);
+    }
   });
 });
 
