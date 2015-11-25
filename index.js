@@ -124,6 +124,7 @@ io.on('connection', function (socket){
         targetTimeSlot.active = false;
         client.hmset('schedules', message.scheduleid, JSON.stringify(targetSchedule));
         socket.broadcast.emit('disableSlot', targetTimeSlot);
+        socket.emit('highlightSlot', targetTimeSlot);
       });
     }
   });

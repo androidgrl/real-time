@@ -75,8 +75,14 @@ function sendSlot() {
 socket.on('disableSlot', function (data) {
   console.log(data, "=======================datacomingintodisableslotchannel");
   $("input[data-id='" + data.id +"']").addClass('disabled');
+  $("input[data-id='" + data.id +"']").removeClass('radio-btn');
+  $("input[data-id='" + data.id +"']").parent().addClass('label-grey');
   //add branching in the view
   //the data-active is not being updated after refresh
+});
+
+socket.on('highlightSlot', function (data) {
+  $("input[data-id='" + data.id +"']").parent().addClass('label-green');
 });
 
 $('document').ready(function(){
