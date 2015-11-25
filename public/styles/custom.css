@@ -5,3 +5,7 @@ body {
 div#slot {
     margin-bottom: 15px;
 }
+
+p {
+    margin: 0px;
+}
