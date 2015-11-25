@@ -99,31 +99,35 @@ io.on('connection', function (socket){
       io.sockets.emit('postSlots' + message.scheduleId, message);
     }
     if (channel==='selectSlot') {
-      //I want to change the slot to not active and save it in redis
-      //then add branching to the view that checks for this and adds the class
-      //disabled when it is inactive for page refreshing
-      //then for dynamically updating, dynamically add the class throught sockets.emit
-      //and dynamically update the data attribute
-      //message = { id: '6def3b3b75c35332ac59dfa8f73825322b7b1464',
-      //scheduleid: '5062b0232a646432bf59bc3bfedc5e5add1c7d17',
-      //active: 'true',
-      //start: 'b',
-      //end: 'b',
-      //date: 'b',
-      //comments: 'b' }
-      //var targetSchedule = _.find(schedules, function (schedule) {
-      //return JSON.parse(schedule).schedulingPageId === req.params.id;
-      //});
-      //message.scheduleid**************because the dataset will lowercase everything
       client.hgetall('schedules', function (err, schedules){
         var targetSchedule = JSON.parse(schedules[message.scheduleid]);
         var targetTimeSlot = _.find(targetSchedule.timeSlots, function (slot) {
           return slot.id === message.id;
         });
-        targetTimeSlot.active = false;
+        var timeSlotsAlreadyTaken = _.filter(targetSchedule.timeSlots, function (slot) {
+          return slot.studentId;
+        });
+
+        var timeSlotWithSameStudentId = _.find(timeSlotsAlreadyTaken, function (slot) {
+          return slot.studentId === socket.id;
+        });
+        if (timeSlotsAlreadyTaken.length > 0) {
+          if (timeSlotWithSameStudentId) {
+            if (!targetTimeSlot.studentId) {
+              timeSlotWithSameStudentId.studentId = null;
+              timeSlotWithSameStudentId.active = true;
+              targetTimeSlot.studentId = socket.id;
+              targetTimeSlot.active = false;
+            }
+          } else if (!targetTimeSlot.studentId) {
+            targetTimeSlot.studentId = socket.id;
+            targetTimeSlot.active = false;
+          }
+        } else {
+          targetTimeSlot.studentId = socket.id;
+          targetTimeSlot.active = false;
+        }
         client.hmset('schedules', message.scheduleid, JSON.stringify(targetSchedule));
-        socket.broadcast.emit('disableSlot', targetTimeSlot);
-        socket.emit('highlightSlot', targetTimeSlot);
       });
     }
   });
@@ -136,5 +140,3 @@ if(!module.parent){
 }
 
 module.exports = app;
-//check with redis-cli, keys *, hgetall "polls"
-//flushall

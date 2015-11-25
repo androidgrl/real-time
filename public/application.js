@@ -79,6 +79,7 @@ function sendSlot() {
 }
 
 socket.on('disableSlot', function (data) {
+  //update the database then rerender all the slots
   console.log(data, "=======================datacomingintodisableslotchannel");
   $("input[data-id='" + data.id +"']").addClass('disabled');
   $("input[data-id='" + data.id +"']").removeClass('radio-btn');
