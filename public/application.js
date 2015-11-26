@@ -81,7 +81,7 @@ socket.on('postSlots' + scheduleId , function(data) {
   makeAdminSlots(data);
 });
 
-socket.on('updateSlots', function (data) {
+socket.on('updateSlots' + scheduleId, function (data) {
   scheduleingPageSlots.html('');
   makeScheduleSlots(data);
   adminPageSlots.html('');
