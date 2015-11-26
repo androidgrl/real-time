@@ -49,9 +49,11 @@ function makeScheduleSlots (data){
       'active': slot.active
     });
     scheduleingPageSlots.append(newSlot);
+
     if (!slot.active) {
       if (slot.studentId === socket.id) {
         $("input[data-id='" + slot.id +"']").parent().parent().addClass('label-green');
+        $("input[data-id='" + slot.id +"']").parent().append("<button id='cancel' data-id='" + slot.id + "' data-scheduleId='" + slot.scheduleId + "'>Cancel Reservation</button>");
       } else {
         $("input[data-id='" + slot.id +"']").parent().parent().addClass('label-grey');
       }
@@ -100,4 +102,5 @@ $('document').ready(function (){
   adminPageSlots.delegate('#delete', 'click', deleteSlot);
   adminPageSlots.delegate('.radio-btn', 'click', sendSlot);
   scheduleingPageSlots.delegate('.radio-btn', 'click', sendSlot);
+  makeScheduleSlots(schedule);
 });
