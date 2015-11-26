@@ -34,7 +34,7 @@
                 <p>Date: <%= slot.date %></p>
                 <p>Comments: <%= slot.comments %></p>
                 <% if(slot.active) { %>
-                    <button>Delete Slot</button>
+                    <button id="delete" data-id="<%= slot.id %>" data-scheduleId="<%= slot.scheduleId %>">Delete Slot</button>
                 <% } else { %>
                     <p>Slot taken by: <%= slot.studentId %></p>
                 <% } %>
