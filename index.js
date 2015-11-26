@@ -131,6 +131,17 @@ io.on('connection', function (socket){
         io.sockets.emit('updateSlots' + message.scheduleid, {targetSchedule: targetSchedule, targetTimeSlot: targetTimeSlot});
       });
     }
+    if (channel === 'deleteSlot') {
+      client.hgetall('schedules', function (err, schedules){
+        var targetSchedule = JSON.parse(schedules[message.scheduleid]);
+        var updatedTimeSlots = _.reject(targetSchedule.timeSlots, function (slot) {
+          return slot.id === message.id;
+        });
+        targetSchedule.timeSlots = updatedTimeSlots;
+        client.hmset('schedules', message.scheduleid, JSON.stringify(targetSchedule));
+        io.sockets.emit('updateSlots' + message.scheduleid, {targetSchedule: targetSchedule});
+      });
+    }
   });
 });
 
