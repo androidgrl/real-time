@@ -97,10 +97,15 @@ function deleteSlot () {
   socket.send('deleteSlot', this.dataset);
 }
 
+function cancelSlot() {
+  socket.send('cancelSlot', this.dataset);
+}
+
 $('document').ready(function (){
   submit.on('click', postData);
   adminPageSlots.delegate('#delete', 'click', deleteSlot);
   adminPageSlots.delegate('.radio-btn', 'click', sendSlot);
   scheduleingPageSlots.delegate('.radio-btn', 'click', sendSlot);
+  scheduleingPageSlots.delegate('#cancel', 'click', cancelSlot);
   makeScheduleSlots(schedule);
 });
