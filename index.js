@@ -142,6 +142,18 @@ io.on('connection', function (socket){
         io.sockets.emit('updateSlots' + message.scheduleid, {targetSchedule: targetSchedule});
       });
     }
+    if (channel === 'cancelSlot') {
+      client.hgetall('schedules', function (err, schedules){
+        var targetSchedule = JSON.parse(schedules[message.scheduleid]);
+        var targetTimeSlot = _.find(targetSchedule.timeSlots, function (slot) {
+          return slot.id === message.id;
+        });
+        targetTimeSlot.studentId = null;
+        targetTimeSlot.active = true;
+        client.hmset('schedules', message.scheduleid, JSON.stringify(targetSchedule));
+        io.sockets.emit('updateSlots' + message.scheduleid, {targetSchedule: targetSchedule});
+      });
+    }
   });
 });
 
