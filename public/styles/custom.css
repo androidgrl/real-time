@@ -17,6 +17,7 @@ p {
 #slot {
     border-style: solid;
     border-color: #bab6b6;
+    padding: 10px;
 }
 
 .label-green {
@@ -30,7 +31,7 @@ div#slot {
 .white {
     background-color: white;
     border-style: solid;
-    border-color: grey;
+    border-color: #bab6b6;
     border-radius: 10px;
     padding-left: 40px;
     padding-right: 40px;
@@ -57,4 +58,20 @@ div#slot {
 
 #welcome {
     margin-left: 205px;
+}
+
+.create {
+    border-style: solid;
+    border-color: #bab6b6;
+    border-radius: 10px;
+    margin: 16px;
+    padding: 10px;
+}
+
+.form-group {
+    margin: 0px;
+}
+
+#submit {
+    margin: 10px;
 }
