@@ -1,21 +1,26 @@
 <div class="white" class="row">
 <div class="col-md-12">
-  <h1>Scheduling Page</h1>
-  <h4>For Schedule With ID:  <%= schedule.id %></h4>
-  <h3>Time Slots:</h3>
-  <div id="scheduling-slots">
-    <% schedule.timeSlots.forEach(function(slot){ %>
-    <div class="radio" id="slot">
-      <label>
-        <input class="radio-btn" type="radio" name="optradio" data-id="<%= slot.id %>" data-scheduleId="<%= slot.scheduleId %>" data-active="<%= slot.active %>" data-start="<%= slot.startTime %>" data-end="<%= slot.endTime %>" data-date="<%= slot.date %>" data-comments="<%= slot.comments %>">
-        <p>Start Time: <%= slot.startTime %></p>
-        <p>End Time: <%= slot.endTime %></p>
-        <p>Date: <%= slot.date %></li>
-        <p>Comments: <%= slot.comments %></p>
-      </label>
+    <h1>Scheduling Page</h1>
+    <h4>For Schedule With ID:  <%= schedule.id %></h4>
+    <h3>Time Slots:</h3>
+    <div id="scheduling-slots">
+        <% schedule.timeSlots.forEach(function(slot){ %>
+            <% if(!slot.active) { %>
+                <% var label = "label-grey" %>
+            <% } else { %>
+                <% var label = "nothing" %>
+            <% } %>
+            <div class="radio <%= label %>" id="slot">
+                <label>
+                    <input class="radio-btn" type="radio" name="optradio" data-id="<%= slot.id %>" data-scheduleId="<%= slot.scheduleId %>" data-active="<%= slot.active %>" data-start="<%= slot.startTime %>" data-end="<%= slot.endTime %>" data-date="<%= slot.date %>" data-comments="<%= slot.comments %>">
+                    <p>Start Time: <%= slot.startTime %></p>
+                    <p>End Time: <%= slot.endTime %></p>
+                    <p>Date: <%= slot.date %></li>
+                <p>Comments: <%= slot.comments %></p>
+                </label>
+            </div>
+        <% }); %>
     </div>
-    <% }); %>
-  </div>
 </div>
 </div>
 <script>
