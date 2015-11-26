@@ -75,3 +75,11 @@ div#slot {
 #submit {
     margin: 10px;
 }
+
+input#start, input#end, input#date, input#comments {
+    height: 29px;
+}
+
+#comments {
+    border-radius: 4px;
+}
