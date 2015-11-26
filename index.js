@@ -76,7 +76,6 @@ app.post('/admin-dashboard/slots', function (req, res){
   slot.comments = req.body.comments;
   slot.scheduleId = req.body.scheduleId;
   slot.username = req.body.username;
-  console.log(req.body, "****************");
 
   var scheduleId = req.body.scheduleId;
 
@@ -91,6 +90,8 @@ app.post('/admin-dashboard/slots', function (req, res){
 io.on('connection', function (socket){
   console.log('A user has connected.');
   console.log(io.engine.clientsCount + ' user(s) now connected.');
+
+  socket.emit('socketId', socket.id);
 
   socket.on('disconnect', function (){
     console.log('A user has disconnected.');
@@ -110,7 +111,7 @@ io.on('connection', function (socket){
           return slot.studentId;
         });
         var timeSlotWithSameStudentId = _.find(timeSlotsAlreadyTaken, function (slot) {
-          return slot.studentId === socket.id;
+          return slot.studentId === message.dataset.socketid;
         });
         if (timeSlotsAlreadyTaken.length > 0) {
           if (timeSlotWithSameStudentId) {
@@ -118,17 +119,17 @@ io.on('connection', function (socket){
               timeSlotWithSameStudentId.studentId = null;
               timeSlotWithSameStudentId.active = true;
               timeSlotWithSameStudentId.username = null;
-              targetTimeSlot.studentId = socket.id;
+              targetTimeSlot.studentId = message.dataset.socketid;
               targetTimeSlot.active = false;
               targetTimeSlot.username = message.username;
             }
           } else if (!targetTimeSlot.studentId) {
-            targetTimeSlot.studentId = socket.id;
+            targetTimeSlot.studentId = message.dataset.socketid;
             targetTimeSlot.active = false;
             targetTimeSlot.username = message.username;
           }
         } else {
-          targetTimeSlot.studentId = socket.id;
+          targetTimeSlot.studentId = message.dataset.socketid;
           targetTimeSlot.active = false;
           targetTimeSlot.username = message.username;
         }
