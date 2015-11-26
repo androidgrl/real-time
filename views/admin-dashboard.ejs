@@ -1,41 +1,46 @@
 <div class="white">
 <div class="row">
-<div class="col-md-12">
-  <h1>Admin Dashboard</h1>
-  <h4>For Schedule With ID:  <%= id %></h2>
-  <h5>Link to Scheduling Page:</h5>
-  <a href="http://<%= host + schedule.schedulingPageUrl %>">http://<%= host %><%= schedule.schedulingPageUrl %></a>
-</div>
+    <div class="col-md-12">
+        <h1>Admin Dashboard</h1>
+        <h4>For Schedule With ID:  <%= id %></h2>
+        <h5>Link to Scheduling Page:</h5>
+        <a href="http://<%= host + schedule.schedulingPageUrl %>">http://<%= host %><%= schedule.schedulingPageUrl %></a>
+    </div>
 </div>
 <div class="row">
-  <div class="col-md-8">
-    <h3>Create New Time Slot</h3>
-    <div class="form-group">
-      <label for="start">Start Time</label><br>
-      <input type="text" class="form-control" id="start" name="start"><br>
-      <label for="end">End Time</label><br>
-      <input type="text" class="form-control" id="end" name="end"><br>
-      <label for="date">Date</label><br>
-      <input type="text" class="form-control" id="date" name="date">
-      <label for="comments">Comments</label><br>
-      <input type="text" class="form-control" id="comments" name="comments">
-      <input type="hidden" id="schedule-id" name="schedule-id" value="<%= id %>">
+    <div class="col-md-8">
+        <h3>Create New Time Slot</h3>
+        <div class="form-group">
+            <label for="start">Start Time</label><br>
+            <input type="text" class="form-control" id="start" name="start"><br>
+            <label for="end">End Time</label><br>
+            <input type="text" class="form-control" id="end" name="end"><br>
+            <label for="date">Date</label><br>
+            <input type="text" class="form-control" id="date" name="date">
+            <label for="comments">Comments</label><br>
+            <input type="text" class="form-control" id="comments" name="comments">
+            <input type="hidden" id="schedule-id" name="schedule-id" value="<%= id %>">
+        </div>
+        <button type="submit" class="btn btn-default" id="submit">Create</button>
     </div>
-    <button type="submit" class="btn btn-default" id="submit">Create</button>
-  </div>
 </div>
 <div class="row">
-  <h3>Time Slots:</h3>
-  <div class="col-md-8" id="slots">
-    <% schedule.timeSlots.forEach(function(slot){ %>
-    <div id="slot" data-id="<%= slot.id %>" data-scheduleId='<%= slot.scheduleId %>' data-active='<%= slot.active %>' data-start="<%= slot.startTime %>" data-end="<%= slot.endTime %>" data-date="<%= slot.date %>" data-comments="<%= slot.comments %>">
-      <p>Start Time: <%= slot.startTime %></p>
-      <p>End Time: <%= slot.endTime %></p>
-      <p>Date: <%= slot.date %></p>
-      <p>Comments: <%= slot.comments %></p>
+    <h3>Time Slots:</h3>
+    <div class="col-md-8" id="slots">
+        <% schedule.timeSlots.forEach(function(slot){ %>
+            <div id="slot" data-id="<%= slot.id %>" data-scheduleId='<%= slot.scheduleId %>' data-active='<%= slot.active %>' data-start="<%= slot.startTime %>" data-end="<%= slot.endTime %>" data-date="<%= slot.date %>" data-comments="<%= slot.comments %>">
+                <p>Start Time: <%= slot.startTime %></p>
+                <p>End Time: <%= slot.endTime %></p>
+                <p>Date: <%= slot.date %></p>
+                <p>Comments: <%= slot.comments %></p>
+                <% if(slot.active) { %>
+                    <button>Delete Slot</button>
+                <% } else { %>
+                    <p>Slot taken by: <%= slot.studentId %></p>
+                <% } %>
+            </div>
+        <% }); %>
     </div>
-    <% }); %>
-  </div>
 </div>
 <script>
 var scheduleId = <%- JSON.stringify(id) %>;

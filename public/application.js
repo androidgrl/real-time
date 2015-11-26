@@ -72,7 +72,9 @@ function makeAdminSlots(data) {
     });
     adminPageSlots.append(newSlot);
     if (!slot.active) {
-      $("div[data-id='" + slot.id +"']").append("<p>Slot taken by " + slot.studentId + "</p>");
+      $("div[data-id='" + slot.id +"']").append("<p>Slot taken by: " + slot.studentId + "</p>");
+    } else {
+      $("div[data-id='" + slot.id +"']").append("<button>Delete Slot</button>");
     }
   });
 }
