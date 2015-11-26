@@ -4,6 +4,7 @@ const end = $('#end');
 const date = $('#date');
 const comments = $('#comments');
 const idOfSchedule = $('#schedule-id');
+const username = $('#username');
 const adminPageSlots = $('#slots');
 const scheduleingPageSlots = $('#scheduling-slots');
 const radioButtons = $('.radio-btn');
@@ -53,7 +54,7 @@ function makeScheduleSlots (data){
     if (!slot.active) {
       if (slot.studentId === socket.id) {
         $("input[data-id='" + slot.id +"']").parent().parent().addClass('label-green');
-        $("input[data-id='" + slot.id +"']").parent().append("<button id='cancel' data-id='" + slot.id + "' data-scheduleId='" + slot.scheduleId + "'>Cancel Reservation</button>");
+        $("input[data-id='" + slot.id +"']").parent().append("<button class='btn btn-danger' id='cancel' data-id='" + slot.id + "' data-scheduleId='" + slot.scheduleId + "'>Cancel Reservation</button>");
       } else {
         $("input[data-id='" + slot.id +"']").parent().parent().addClass('label-grey');
       }
@@ -74,10 +75,11 @@ function makeAdminSlots (data){
       'active': slot.active
     });
     adminPageSlots.append(newSlot);
+    var username = slot.username || "No Name Given";
     if (!slot.active) {
-      $("div[data-id='" + slot.id +"']").append("<p>Slot taken by: " + slot.studentId + "</p>");
+      $("div[data-id='" + slot.id +"']").append("<p>Slot taken by: " + username + "</p>");
     } else {
-      $("div[data-id='" + slot.id +"']").append("<button id='delete' data-id='" + slot.id +"' data-scheduleId='" + slot.scheduleId + "'>Delete Slot</button>");
+      $("div[data-id='" + slot.id +"']").append("<button class='btn btn-danger' id='delete' data-id='" + slot.id +"' data-scheduleId='" + slot.scheduleId + "'>Delete Slot</button>");
     }
   });
 }
@@ -89,10 +91,6 @@ socket.on('updateSlots' + scheduleId, function (data){
   makeAdminSlots(data);
 });
 
-function sendSlot () {
-  socket.send('selectSlot', this.dataset);
-}
-
 function deleteSlot () {
   socket.send('deleteSlot', this.dataset);
 }
@@ -101,11 +99,16 @@ function cancelSlot() {
   socket.send('cancelSlot', this.dataset);
 }
 
+function sendSlot () {
+  socket.send('selectSlot', {dataset: this.dataset, username: username.val()});
+}
+
 $('document').ready(function (){
   submit.on('click', postData);
   adminPageSlots.delegate('#delete', 'click', deleteSlot);
+  scheduleingPageSlots.delegate('#cancel', 'click', cancelSlot);
   adminPageSlots.delegate('.radio-btn', 'click', sendSlot);
   scheduleingPageSlots.delegate('.radio-btn', 'click', sendSlot);
-  scheduleingPageSlots.delegate('#cancel', 'click', cancelSlot);
   makeScheduleSlots(schedule);
+  makeAdminSlots(schedule);
 });
