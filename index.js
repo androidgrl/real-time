@@ -75,6 +75,8 @@ app.post('/admin-dashboard/slots', function (req, res){
   slot.date = req.body.date;
   slot.comments = req.body.comments;
   slot.scheduleId = req.body.scheduleId;
+  slot.username = req.body.username;
+  console.log(req.body, "****************");
 
   var scheduleId = req.body.scheduleId;
 
@@ -100,14 +102,13 @@ io.on('connection', function (socket){
     }
     if (channel==='selectSlot') {
       client.hgetall('schedules', function (err, schedules){
-        var targetSchedule = JSON.parse(schedules[message.scheduleid]);
+        var targetSchedule = JSON.parse(schedules[message.dataset.scheduleid]);
         var targetTimeSlot = _.find(targetSchedule.timeSlots, function (slot) {
-          return slot.id === message.id;
+          return slot.id === message.dataset.id;
         });
         var timeSlotsAlreadyTaken = _.filter(targetSchedule.timeSlots, function (slot) {
           return slot.studentId;
         });
-
         var timeSlotWithSameStudentId = _.find(timeSlotsAlreadyTaken, function (slot) {
           return slot.studentId === socket.id;
         });
@@ -116,19 +117,23 @@ io.on('connection', function (socket){
             if (!targetTimeSlot.studentId) {
               timeSlotWithSameStudentId.studentId = null;
               timeSlotWithSameStudentId.active = true;
+              timeSlotWithSameStudentId.username = null;
               targetTimeSlot.studentId = socket.id;
               targetTimeSlot.active = false;
+              targetTimeSlot.username = message.username;
             }
           } else if (!targetTimeSlot.studentId) {
             targetTimeSlot.studentId = socket.id;
             targetTimeSlot.active = false;
+            targetTimeSlot.username = message.username;
           }
         } else {
           targetTimeSlot.studentId = socket.id;
           targetTimeSlot.active = false;
+          targetTimeSlot.username = message.username;
         }
-        client.hmset('schedules', message.scheduleid, JSON.stringify(targetSchedule));
-        io.sockets.emit('updateSlots' + message.scheduleid, {targetSchedule: targetSchedule, targetTimeSlot: targetTimeSlot});
+        client.hmset('schedules', message.dataset.scheduleid, JSON.stringify(targetSchedule));
+        io.sockets.emit('updateSlots' + message.dataset.scheduleid, {targetSchedule: targetSchedule, targetTimeSlot: targetTimeSlot});
       });
     }
     if (channel === 'deleteSlot') {
