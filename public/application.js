@@ -64,10 +64,24 @@ function makeAdminSlots(data) {
       'active': slot.active
     });
     adminPageSlots.append(newSlot);
+    if (!slot.active) {
+      //$("input[data-id='" + slot.id +"']").addClass('disabled');
+      //$("input[data-id='" + slot.id +"']").removeClass('radio-btn');
+      $("input[data-id='" + slot.id +"']").parent().addClass('label-grey');
+    }
   });
 }
 
 socket.on('postSlots' + scheduleId , function(data) {
+  scheduleingPageSlots.html('');
+  makeScheduleSlots(data);
+  adminPageSlots.html('');
+  makeAdminSlots(data);
+});
+
+socket.on('updateSlots', function (data) {
+  console.log(data.targetTimeSlot, "***************targetTimeSlot");
+  console.log(data.targetSchedule, "***************targetSchedule");
   scheduleingPageSlots.html('');
   makeScheduleSlots(data);
   adminPageSlots.html('');

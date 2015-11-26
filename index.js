@@ -128,6 +128,7 @@ io.on('connection', function (socket){
           targetTimeSlot.active = false;
         }
         client.hmset('schedules', message.scheduleid, JSON.stringify(targetSchedule));
+        io.sockets.emit('updateSlots', {targetSchedule: targetSchedule, targetTimeSlot: targetTimeSlot});
       });
     }
   });

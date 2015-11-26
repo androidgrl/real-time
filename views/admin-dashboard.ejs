@@ -24,8 +24,8 @@
   </div>
 </div>
 <div class="row">
+  <h3>Time Slots:</h3>
   <div class="col-md-8" id="slots">
-    <h3>Time Slots:</h3>
     <% schedule.timeSlots.forEach(function(slot){ %>
     <div id="slot" data-id="<%= slot.id %>" data-scheduleId='<%= slot.scheduleId %>' data-active='<%= slot.active %>' data-start="<%= slot.startTime %>" data-end="<%= slot.endTime %>" data-date="<%= slot.date %>" data-comments="<%= slot.comments %>">
       <p>Start Time: <%= slot.startTime %></p>
