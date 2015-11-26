@@ -132,4 +132,9 @@ $('document').ready(function (){
   scheduleingPageSlots.delegate('.radio-btn', 'click', sendSlot);
   makeScheduleSlots(schedule);
   makeAdminSlots(schedule);
+  $(function() {
+    $('#datetimepicker3').datetimepicker({
+      format: 'LT'
+    });
+  });
 });
