@@ -2,8 +2,8 @@
 <div class="col-md-12">
   <h1>Scheduling Page</h1>
   <h4>For Schedule With ID:  <%= schedule.id %></h4>
+  <h3>Time Slots:</h3>
   <div id="scheduling-slots">
-    <h3>Time Slots:</h3>
     <% schedule.timeSlots.forEach(function(slot){ %>
     <div class="radio" id="slot">
       <label>

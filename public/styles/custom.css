@@ -14,6 +14,11 @@ p {
     background-color: grey;
 }
 
+#slot {
+    border-style: solid;
+    border-color: #bab6b6;
+}
+
 .label-green {
-    background-color: green;
+    background-color: #75e5b4;
 }

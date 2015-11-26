@@ -64,10 +64,27 @@ function makeAdminSlots(data) {
       'active': slot.active
     });
     adminPageSlots.append(newSlot);
+    if (!slot.active) {
+      //$("input[data-id='" + slot.id +"']").addClass('disabled');
+      //$("input[data-id='" + slot.id +"']").removeClass('radio-btn');
+      console.log(slot.studentId, socket.id, "************ids");
+      if (slot.studentId === socket.id) {
+        $("input[data-id='" + slot.id +"']").parent().parent().addClass('label-green');
+      } else {
+        $("input[data-id='" + slot.id +"']").parent().parent().addClass('label-grey');
+      }
+    }
   });
 }
 
 socket.on('postSlots' + scheduleId , function(data) {
+  scheduleingPageSlots.html('');
+  makeScheduleSlots(data);
+  adminPageSlots.html('');
+  makeAdminSlots(data);
+});
+
+socket.on('updateSlots', function (data) {
   scheduleingPageSlots.html('');
   makeScheduleSlots(data);
   adminPageSlots.html('');
@@ -79,13 +96,9 @@ function sendSlot() {
 }
 
 socket.on('disableSlot', function (data) {
-  //update the database then rerender all the slots
-  console.log(data, "=======================datacomingintodisableslotchannel");
   $("input[data-id='" + data.id +"']").addClass('disabled');
   $("input[data-id='" + data.id +"']").removeClass('radio-btn');
   $("input[data-id='" + data.id +"']").parent().addClass('label-grey');
-  //add branching in the view
-  //the data-active is not being updated after refresh
 });
 
 socket.on('highlightSlot', function (data) {
