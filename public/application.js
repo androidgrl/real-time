@@ -48,6 +48,13 @@ function makeScheduleSlots(data) {
       'active': slot.active
     });
     scheduleingPageSlots.append(newSlot);
+    if (!slot.active) {
+      if (slot.studentId === socket.id) {
+        $("input[data-id='" + slot.id +"']").parent().parent().addClass('label-green');
+      } else {
+        $("input[data-id='" + slot.id +"']").parent().parent().addClass('label-grey');
+      }
+    }
   });
 }
 
@@ -64,16 +71,6 @@ function makeAdminSlots(data) {
       'active': slot.active
     });
     adminPageSlots.append(newSlot);
-    if (!slot.active) {
-      //$("input[data-id='" + slot.id +"']").addClass('disabled');
-      //$("input[data-id='" + slot.id +"']").removeClass('radio-btn');
-      console.log(slot.studentId, socket.id, "************ids");
-      if (slot.studentId === socket.id) {
-        $("input[data-id='" + slot.id +"']").parent().parent().addClass('label-green');
-      } else {
-        $("input[data-id='" + slot.id +"']").parent().parent().addClass('label-grey');
-      }
-    }
   });
 }
 
@@ -94,16 +91,6 @@ socket.on('updateSlots', function (data) {
 function sendSlot() {
   socket.send('selectSlot', this.dataset);
 }
-
-socket.on('disableSlot', function (data) {
-  $("input[data-id='" + data.id +"']").addClass('disabled');
-  $("input[data-id='" + data.id +"']").removeClass('radio-btn');
-  $("input[data-id='" + data.id +"']").parent().addClass('label-grey');
-});
-
-socket.on('highlightSlot', function (data) {
-  $("input[data-id='" + data.id +"']").parent().addClass('label-green');
-});
 
 $('document').ready(function(){
   submit.on('click', postData);
