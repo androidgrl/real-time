@@ -8,6 +8,7 @@ const adminPageSlots = $('#slots');
 const scheduleingPageSlots = $('#scheduling-slots');
 const radioButtons = $('.radio-btn');
 const submit = $('#submit');
+const deleteButton = $('#delete');
 
 socket.on('connect', function(){
   console.log(socket.id, 'socket id');
@@ -74,7 +75,7 @@ function makeAdminSlots(data) {
     if (!slot.active) {
       $("div[data-id='" + slot.id +"']").append("<p>Slot taken by: " + slot.studentId + "</p>");
     } else {
-      $("div[data-id='" + slot.id +"']").append("<button>Delete Slot</button>");
+      $("div[data-id='" + slot.id +"']").append("<button id='delete' data-id='" + slot.id +"' data-scheduleId='" + slot.scheduleId + "'>Delete Slot</button>");
     }
   });
 }
@@ -97,8 +98,13 @@ function sendSlot() {
   socket.send('selectSlot', this.dataset);
 }
 
+function deleteSlot () {
+  socket.send('deleteSlot', this.dataset);
+}
+
 $('document').ready(function(){
   submit.on('click', postData);
+  adminPageSlots.delegate('#delete', 'click', deleteSlot);
   adminPageSlots.delegate('.radio-btn', 'click', sendSlot);
   scheduleingPageSlots.delegate('.radio-btn', 'click', sendSlot);
 });
