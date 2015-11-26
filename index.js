@@ -96,7 +96,7 @@ io.on('connection', function (socket){
 
   socket.on('message', function (channel, message){
     if (channel==='slots'){
-      io.sockets.emit('postSlots' + message.scheduleId, message);
+      io.sockets.emit('updateSlots' + message.scheduleId, message);
     }
     if (channel==='selectSlot') {
       client.hgetall('schedules', function (err, schedules){

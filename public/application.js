@@ -10,11 +10,11 @@ const radioButtons = $('.radio-btn');
 const submit = $('#submit');
 const deleteButton = $('#delete');
 
-socket.on('connect', function(){
+socket.on('connect', function (){
   console.log(socket.id, 'socket id');
 });
 
-function formData(){
+function formData (){
   return {
     start: start.val(),
     end: end.val(),
@@ -24,7 +24,7 @@ function formData(){
   };
 }
 
-function postData(){
+function postData (){
   $.post('/admin-dashboard/slots',
          formData(),
          function(data){
@@ -36,8 +36,8 @@ function postData(){
          });
 }
 
-function makeScheduleSlots(data) {
-  data.targetSchedule.timeSlots.forEach(function (slot) {
+function makeScheduleSlots (data){
+  data.targetSchedule.timeSlots.forEach(function (slot){
     var compiled = _.template("<div class='radio' id='slot'><label><input class='radio-btn' type='radio' name='optradio' data-id='<%= id %>' data-scheduleId='<%= scheduleId %>' data-active='<%= active %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><p>Start Time: <%= start %></p><p>End Time: <%= end %> </p><p>Date: <%= date %></p><p>Comments: <%= comments %></p></label></div>");
     var newSlot = compiled({
       'start': slot.startTime,
@@ -59,8 +59,8 @@ function makeScheduleSlots(data) {
   });
 }
 
-function makeAdminSlots(data) {
-  data.targetSchedule.timeSlots.forEach(function (slot) {
+function makeAdminSlots (data){
+  data.targetSchedule.timeSlots.forEach(function (slot){
     var compiled = _.template("<div id='slot' data-id='<%= id %>' data-scheduleId='<%= scheduleId %>' data-active='<%= active %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><p>Start Time: <%= start %></p><p>End Time: <%= end %> </p><p>Date: <%= date %></p><p>Comments: <%= comments %></p></label></div>");
     var newSlot = compiled({
       'start': slot.startTime,
@@ -80,21 +80,14 @@ function makeAdminSlots(data) {
   });
 }
 
-socket.on('postSlots' + scheduleId , function(data) {
+socket.on('updateSlots' + scheduleId, function (data){
   scheduleingPageSlots.html('');
   makeScheduleSlots(data);
   adminPageSlots.html('');
   makeAdminSlots(data);
 });
 
-socket.on('updateSlots' + scheduleId, function (data) {
-  scheduleingPageSlots.html('');
-  makeScheduleSlots(data);
-  adminPageSlots.html('');
-  makeAdminSlots(data);
-});
-
-function sendSlot() {
+function sendSlot () {
   socket.send('selectSlot', this.dataset);
 }
 
@@ -102,7 +95,7 @@ function deleteSlot () {
   socket.send('deleteSlot', this.dataset);
 }
 
-$('document').ready(function(){
+$('document').ready(function (){
   submit.on('click', postData);
   adminPageSlots.delegate('#delete', 'click', deleteSlot);
   adminPageSlots.delegate('.radio-btn', 'click', sendSlot);
