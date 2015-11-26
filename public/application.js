@@ -71,6 +71,9 @@ function makeAdminSlots(data) {
       'active': slot.active
     });
     adminPageSlots.append(newSlot);
+    if (!slot.active) {
+      $("div[data-id='" + slot.id +"']").append("<p>Slot taken by " + slot.studentId + "</p>");
+    }
   });
 }
 
