@@ -83,3 +83,7 @@ input#start, input#end, input#date, input#comments {
 #comments {
     border-radius: 4px;
 }
+
+.admin {
+    padding: 32px;
+}

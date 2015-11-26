@@ -1,71 +1,71 @@
 <div class="white">
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 admin">
         <h1>Admin Dashboard</h1>
         <h4>For Schedule With ID:  <%= id %></h2>
         <h5>Link to Scheduling Page:</h5>
         <a href="http://<%= host + schedule.schedulingPageUrl %>">http://<%= host %><%= schedule.schedulingPageUrl %></a>
     </div>
     <div class="row create">
-            <h3>Create New Time Slot</h3>
-            <div class="form-group">
-                <label for="start">Start Time</label><br>
-                <div class="row">
-                    <div class='col-sm-6'>
-                        <div class="form-group">
-                            <div class='input-group date' id='datetimepicker1'>
-                                <input type='text' class="form-control" id="start" name="start"/>
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-time"></span>
-                                </span>
-                            </div>
+        <h3>Create New Time Slot</h3>
+        <div class="form-group">
+            <label for="start">Start Time</label><br>
+            <div class="row">
+                <div class='col-sm-6'>
+                    <div class="form-group">
+                        <div class='input-group date' id='datetimepicker1'>
+                            <input type='text' class="form-control" id="start" name="start"/>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="end">End Time</label><br>
-                <div class="row">
-                    <div class='col-sm-6'>
-                        <div class="form-group">
-                            <div class='input-group date' id='datetimepicker2'>
-                                <input type='text' class="form-control" id="end" name="end"/>
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-time"></span>
-                                </span>
-                            </div>
+        </div>
+        <div class="form-group">
+            <label for="end">End Time</label><br>
+            <div class="row">
+                <div class='col-sm-6'>
+                    <div class="form-group">
+                        <div class='input-group date' id='datetimepicker2'>
+                            <input type='text' class="form-control" id="end" name="end"/>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="date">Date</label><br>
-                <div class="row">
-                    <div class='col-sm-6'>
-                        <div class="form-group">
-                            <div class='input-group date' id='datetimepicker3'>
-                                <input type='text' class="form-control" id="date" name="date"/>
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            </div>
+        </div>
+        <div class="form-group">
+            <label for="date">Date</label><br>
+            <div class="row">
+                <div class='col-sm-6'>
+                    <div class="form-group">
+                        <div class='input-group date' id='datetimepicker3'>
+                            <input type='text' class="form-control" id="date" name="date"/>
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="comments">Comments</label><br>
-                <div class="row">
-                    <div class='col-sm-6'>
-                        <div class="form-group">
-                            <div class='input-group date' id='datetimepicker3'>
-                                <input type='text' class="form-control" id="comments" name="comments"/>
-                            </div>
+        </div>
+        <div class="form-group">
+            <label for="comments">Comments</label><br>
+            <div class="row">
+                <div class='col-sm-6'>
+                    <div class="form-group">
+                        <div class='input-group date' id='datetimepicker3'>
+                            <input type='text' class="form-control" id="comments" name="comments"/>
                         </div>
                     </div>
                 </div>
             </div>
-            <input type="hidden" id="schedule-id" name="schedule-id" value="<%= id %>">
+        </div>
+        <input type="hidden" id="schedule-id" name="schedule-id" value="<%= id %>">
         <button type="submit" class="btn btn-success" id="submit">Create</button>
     </div>
 </div>
