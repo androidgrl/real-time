@@ -12,7 +12,7 @@ const radioButtons = $('.radio-btn');
 const submit = $('#submit');
 const deleteButton = $('#delete');
 
-socket.on('updateSlots' + scheduleId, function (data){
+socket.on('updateSlots' + scheduleId, function (data) {
   scheduleingPageSlots.html('');
   makeScheduleSlots(data);
   adminPageSlots.html('');
@@ -38,7 +38,7 @@ function getCookie(cname) {
   return '';
 }
 
-function formData (){
+function formData () {
   var startDateTimeRaw = start.val() + date.val();
   var startDateTime = moment(startDateTimeRaw, "h:mm AMM-DD-YYYY").utc().format();
   var localStartTime = moment(start.val(), "h:mm A");
@@ -63,11 +63,11 @@ function checkFields() {
   }
 }
 
-function postData (){
+function postData () {
   if (checkFields()) {
     $.post('/admin-dashboard/slots',
            formData(),
-           function(data){
+           function(data) {
              socket.send('slots', data);
              start.val('');
              end.val('');
@@ -77,9 +77,9 @@ function postData (){
   }
 }
 
-function makeScheduleSlots (data){
+function makeScheduleSlots (data) {
   var timezone = jstz.determine().name();
-  data.targetSchedule.timeSlots.forEach(function (slot){
+  data.targetSchedule.timeSlots.forEach(function (slot) {
     var offset = moment().format('ZZ');
     var startTime = moment(slot.startTime).utcOffset(offset).format("h:mm A") + " " + timezone;
     var endTime = moment(slot.endTime).utcOffset(offset).format("h:mm A") + " " + timezone;
@@ -99,14 +99,7 @@ function makeScheduleSlots (data){
 
     if (!slot.active) {
       if (slot.studentId === getCookie('socketid')) {
-        var startTimeObject = moment(slot.startTime).utc();
-        var endTimeObject = moment(slot.endTime).utc();
-        var googleStartDay = startTimeObject.format("YYYYMMDD");
-        var googleEndDay = endTimeObject.format("YYYYMMDD");
-        var googleStartTime = startTimeObject.format("hhmmss");
-        var googleEndTime = startTimeObject.format("hhmmss");
-        var googleCombinedTimes = googleStartTime + googleEndTime;
-        var googleDateTime = googleStartDay + "T" + googleStartTime + "Z/" + googleEndDay + "T" + googleEndTime + "Z";
+        googleDateTime = parseGoogleDateTime(slot);
         $("input[data-id='" + slot.id +"']").parent().parent().addClass('label-green');
         $("input[data-id='" + slot.id +"']").parent().append("<button class='btn btn-danger' id='cancel' data-id='" + slot.id + "' data-scheduleId='" + slot.scheduleId + "'>Cancel Reservation</button>");
         $("input[data-id='" + slot.id +"']").parent().append("<a id='save' class='btn btn-primary' target='_blank' href='https://calendar.google.com/calendar/render?action=TEMPLATE&text=Appointment&dates=" + googleDateTime + "&details=" + slot.comments + "&=true&output=xml#eventpage_6'>Save To Google Calendar</a>");
@@ -117,9 +110,20 @@ function makeScheduleSlots (data){
   });
 }
 
-function makeAdminSlots (data){
+function parseGoogleDateTime(slot) {
+  var startTimeObject = moment(slot.startTime).utc();
+  var endTimeObject = moment(slot.endTime).utc();
+  var googleStartDay = startTimeObject.format("YYYYMMDD");
+  var googleEndDay = endTimeObject.format("YYYYMMDD");
+  var googleStartTime = startTimeObject.format("hhmmss");
+  var googleEndTime = endTimeObject.format("hhmmss");
+  var googleDateTime = googleStartDay + "T" + googleStartTime + "Z/" + googleEndDay + "T" + googleEndTime + "Z";
+  return googleDateTime;
+}
+
+function makeAdminSlots (data) {
   var timezone = jstz.determine().name();
-  data.targetSchedule.timeSlots.forEach(function (slot){
+  data.targetSchedule.timeSlots.forEach(function (slot) {
     var offset = moment().format('ZZ');
     var startTime = moment(slot.startTime).utcOffset(offset).format("h:mm A") + " " + timezone;
     var endTime = moment(slot.endTime).utcOffset(offset).format("h:mm A") + " " + timezone;
@@ -179,7 +183,7 @@ function setDatePicker() {
   });
 }
 
-$('document').ready(function (){
+$('document').ready(function () {
   submit.on('click', postData);
   adminPageSlots.delegate('#delete', 'click', deleteSlot);
   scheduleingPageSlots.delegate('#cancel', 'click', cancelSlot);
