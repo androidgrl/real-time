@@ -13,7 +13,6 @@ if (process.env.REDISTOGO_URL) {
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
   var redis = require("redis");
   var client = redis.createClient(rtg.port, rtg.hostname, {no_ready_check: true});
-
   client.auth(rtg.auth.split(":")[1]);
 } else {
   var redis = require("redis");
@@ -27,7 +26,6 @@ app.use(ejsLayouts);
 app.set("views","./views");
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
 app.get('/', function (req, res){
   res.sendFile(path.join(__dirname, '/public/index.html'));
 });
@@ -36,7 +34,6 @@ app.get('/admin-dashboard', function (req, res){
   var schedule = new Schedule();
   var id = schedule.id;
   client.hmset('schedules', id, JSON.stringify(schedule));
-
   res.redirect('/admin-dashboard/' + id);
 });
 
@@ -55,7 +52,6 @@ app.get('/admin-dashboard/:id', function (req, res){
 
 app.get('/scheduling-page/:id', function (req, res){
   var id = req.params.id;
-
   client.hgetall('schedules', function (err, schedules){
     var targetSchedule = _.find(schedules, function (schedule) {
       return JSON.parse(schedule).schedulingPageId === req.params.id;
@@ -66,16 +62,19 @@ app.get('/scheduling-page/:id', function (req, res){
   });
 });
 
-app.post('/admin-dashboard/slots', function (req, res){
-  var slot = new Slot();
-  var host = req.headers.host;
-
+function createNewSlot(req, slot) {
   slot.startTime = req.body.start;
   slot.endTime = req.body.end;
   slot.date = req.body.date;
   slot.comments = req.body.comments;
   slot.scheduleId = req.body.scheduleId;
   slot.username = req.body.username;
+}
+
+app.post('/admin-dashboard/slots', function (req, res){
+  var slot = new Slot();
+
+  createNewSlot(req, slot);
 
   var scheduleId = req.body.scheduleId;
 
