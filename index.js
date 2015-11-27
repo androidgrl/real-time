@@ -33,7 +33,7 @@ app.get('/', function (req, res){
 app.get('/admin-dashboard', function (req, res){
   var schedule = new Schedule();
   var id = schedule.id;
-  client.hmset('schedules', id, JSON.stringify(schedule));
+  updateRedis(schedule, id);
   res.redirect('/admin-dashboard/' + id);
 });
 
@@ -66,7 +66,7 @@ function addSlotToSchedule(scheduleId, slot, res) {
   client.hgetall('schedules', function (err, schedules){
     var targetSchedule = JSON.parse(schedules[scheduleId]);
     targetSchedule.timeSlots.push(slot);
-    client.hmset('schedules', scheduleId, JSON.stringify(targetSchedule));
+    updateRedis(targetSchedule, scheduleId);
     res.status(200).send({slot: slot, scheduleId: scheduleId, targetSchedule: targetSchedule});
   });
 }
@@ -124,7 +124,7 @@ io.on('connection', function (socket){
           return slot.studentId === message.dataset.socketid;
         });
         reserveSlotIfAllowed(timeSlotsAlreadyTaken, timeSlotWithSameStudentId, targetTimeSlot, message);
-        client.hmset('schedules', message.dataset.scheduleid, JSON.stringify(targetSchedule));
+        updateRedis(targetSchedule, message.dataset.scheduleid);
         io.sockets.emit('updateSlots' + message.dataset.scheduleid, {targetSchedule: targetSchedule, targetTimeSlot: targetTimeSlot});
       });
     }
@@ -135,7 +135,7 @@ io.on('connection', function (socket){
           return slot.id === message.id;
         });
         targetSchedule.timeSlots = updatedTimeSlots;
-        client.hmset('schedules', message.scheduleid, JSON.stringify(targetSchedule));
+        updateRedis(targetSchedule, message.scheduleid);
         io.sockets.emit('updateSlots' + message.scheduleid, {targetSchedule: targetSchedule});
       });
     }
@@ -147,12 +147,16 @@ io.on('connection', function (socket){
         });
         targetTimeSlot.studentId = null;
         targetTimeSlot.active = true;
-        client.hmset('schedules', message.scheduleid, JSON.stringify(targetSchedule));
+        updateRedis(targetSchedule, message.scheduleid);
         io.sockets.emit('updateSlots' + message.scheduleid, {targetSchedule: targetSchedule});
       });
     }
   });
 });
+
+function updateRedis(targetSchedule, id) {
+  client.hmset('schedules', id, JSON.stringify(targetSchedule));
+}
 
 if(!module.parent){
   http.listen(process.env.PORT || 3000, function (){
