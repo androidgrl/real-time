@@ -82,6 +82,7 @@ input#start, input#end, input#date, input#comments {
 
 #comments {
     border-radius: 4px;
+    width: 499px;
 }
 
 .admin {
