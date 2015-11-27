@@ -15,6 +15,9 @@ socket.on('connect', function (){
   console.log(socket.id, 'socket id');
 });
 
+socket.on('timeZone', function(time) {
+  console.log(time);
+});
 socket.on('updateSlots' + scheduleId, function (data){
   scheduleingPageSlots.html('');
   makeScheduleSlots(data);
