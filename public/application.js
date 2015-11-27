@@ -172,15 +172,9 @@ function sendSlot () {
 }
 
 function setDatePicker() {
-  $('#datetimepicker1').datetimepicker({
-    format: 'LT'
-  });
-  $('#datetimepicker2').datetimepicker({
-    format: 'LT'
-  });
-  $('#datetimepicker3').datetimepicker({
-    format: 'L'
-  });
+  $('#datetimepicker1').datetimepicker({ format: 'LT' });
+  $('#datetimepicker2').datetimepicker({ format: 'LT' });
+  $('#datetimepicker3').datetimepicker({ format: 'L' });
 }
 
 $('document').ready(function () {
