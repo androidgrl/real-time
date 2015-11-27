@@ -88,14 +88,8 @@ app.post('/admin-dashboard/slots', function (req, res){
 });
 
 io.on('connection', function (socket){
-  console.log('A user has connected.');
-  console.log(io.engine.clientsCount + ' user(s) now connected.');
 
   socket.emit('socketId', socket.id);
-
-  socket.on('disconnect', function (){
-    console.log('A user has disconnected.');
-  });
 
   socket.on('message', function (channel, message){
     if (channel==='timeZone'){
