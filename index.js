@@ -78,8 +78,30 @@ app.post('/admin-dashboard/slots', function (req, res){
   addSlotToSchedule(scheduleId, slot, res);
 });
 
-io.on('connection', function (socket){
+function reserveSlotIfAllowed(timeSlotsAlreadyTaken, timeSlotWithSameStudentId, targetTimeSlot, message) {
+  if (timeSlotsAlreadyTaken.length > 0) {
+    if (timeSlotWithSameStudentId) {
+      if (!targetTimeSlot.studentId) {
+        timeSlotWithSameStudentId.studentId = null;
+        timeSlotWithSameStudentId.active = true;
+        timeSlotWithSameStudentId.username = null;
+        targetTimeSlot.studentId = message.dataset.socketid;
+        targetTimeSlot.active = false;
+        targetTimeSlot.username = message.username;
+      }
+    } else if (!targetTimeSlot.studentId) {
+      targetTimeSlot.studentId = message.dataset.socketid;
+      targetTimeSlot.active = false;
+      targetTimeSlot.username = message.username;
+    }
+  } else {
+    targetTimeSlot.studentId = message.dataset.socketid;
+    targetTimeSlot.active = false;
+    targetTimeSlot.username = message.username;
+  }
+}
 
+io.on('connection', function (socket){
   socket.emit('socketId', socket.id);
 
   socket.on('message', function (channel, message){
@@ -101,26 +123,7 @@ io.on('connection', function (socket){
         var timeSlotWithSameStudentId = _.find(timeSlotsAlreadyTaken, function (slot) {
           return slot.studentId === message.dataset.socketid;
         });
-        if (timeSlotsAlreadyTaken.length > 0) {
-          if (timeSlotWithSameStudentId) {
-            if (!targetTimeSlot.studentId) {
-              timeSlotWithSameStudentId.studentId = null;
-              timeSlotWithSameStudentId.active = true;
-              timeSlotWithSameStudentId.username = null;
-              targetTimeSlot.studentId = message.dataset.socketid;
-              targetTimeSlot.active = false;
-              targetTimeSlot.username = message.username;
-            }
-          } else if (!targetTimeSlot.studentId) {
-            targetTimeSlot.studentId = message.dataset.socketid;
-            targetTimeSlot.active = false;
-            targetTimeSlot.username = message.username;
-          }
-        } else {
-          targetTimeSlot.studentId = message.dataset.socketid;
-          targetTimeSlot.active = false;
-          targetTimeSlot.username = message.username;
-        }
+        reserveSlotIfAllowed(timeSlotsAlreadyTaken, timeSlotWithSameStudentId, targetTimeSlot, message);
         client.hmset('schedules', message.dataset.scheduleid, JSON.stringify(targetSchedule));
         io.sockets.emit('updateSlots' + message.dataset.scheduleid, {targetSchedule: targetSchedule, targetTimeSlot: targetTimeSlot});
       });
