@@ -71,19 +71,20 @@ function createNewSlot(req, slot) {
   slot.username = req.body.username;
 }
 
-app.post('/admin-dashboard/slots', function (req, res){
-  var slot = new Slot();
-
-  createNewSlot(req, slot);
-
-  var scheduleId = req.body.scheduleId;
-
+function addSlotToSchedule(scheduleId, slot, res) {
   client.hgetall('schedules', function (err, schedules){
     var targetSchedule = JSON.parse(schedules[scheduleId]);
     targetSchedule.timeSlots.push(slot);
     client.hmset('schedules', scheduleId, JSON.stringify(targetSchedule));
     res.status(200).send({slot: slot, scheduleId: scheduleId, targetSchedule: targetSchedule});
   });
+}
+
+app.post('/admin-dashboard/slots', function (req, res){
+  var slot = new Slot();
+  createNewSlot(req, slot);
+  var scheduleId = req.body.scheduleId;
+  addSlotToSchedule(scheduleId, slot, res);
 });
 
 io.on('connection', function (socket){
