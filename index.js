@@ -82,23 +82,27 @@ function reserveSlotIfAllowed(timeSlotsAlreadyTaken, timeSlotWithSameStudentId, 
   if (timeSlotsAlreadyTaken.length > 0) {
     if (timeSlotWithSameStudentId) {
       if (!targetTimeSlot.studentId) {
-        timeSlotWithSameStudentId.studentId = null;
-        timeSlotWithSameStudentId.active = true;
-        timeSlotWithSameStudentId.username = null;
-        targetTimeSlot.studentId = message.dataset.socketid;
-        targetTimeSlot.active = false;
-        targetTimeSlot.username = message.username;
+        clearDeselectedSlot(timeSlotWithSameStudentId);
+        updateSelectedSlot(targetTimeSlot, message);
       }
     } else if (!targetTimeSlot.studentId) {
-      targetTimeSlot.studentId = message.dataset.socketid;
-      targetTimeSlot.active = false;
-      targetTimeSlot.username = message.username;
+      updateSelectedSlot(targetTimeSlot, message);
     }
   } else {
-    targetTimeSlot.studentId = message.dataset.socketid;
-    targetTimeSlot.active = false;
-    targetTimeSlot.username = message.username;
+    updateSelectedSlot(targetTimeSlot, message);
   }
+}
+
+function clearDeselectedSlot(targetTimeSlot) {
+  targetTimeSlot.studentId = null;
+  targetTimeSlot.active = true;
+  targetTimeSlot.username = null;
+}
+
+function updateSelectedSlot(targetTimeSlot, message) {
+  targetTimeSlot.studentId = message.dataset.socketid;
+  targetTimeSlot.active = false;
+  targetTimeSlot.username = message.username;
 }
 
 io.on('connection', function (socket){
@@ -141,8 +145,7 @@ io.on('connection', function (socket){
       client.hgetall('schedules', function (err, schedules){
         var targetSchedule = JSON.parse(schedules[message.scheduleid]);
         var targetTimeSlot = findTargetTimeSlot(targetSchedule, message.id);
-        targetTimeSlot.studentId = null;
-        targetTimeSlot.active = true;
+        clearDeselectedSlot(targetTimeSlot);
         updateRedis(targetSchedule, message.scheduleid);
         io.sockets.emit('updateSlots' + message.scheduleid, {targetSchedule: targetSchedule});
       });
