@@ -49,10 +49,16 @@ function getCookie(cname) {
 }
 
 function formData (){
+  var startDateTimeRaw = start.val() + date.val();
+  var startDateTime = moment(startDateTimeRaw, "h:mm AMM-DD-YYYY").utc().format();
+  var localStartTime = moment(start.val(), "h:mm A");
+  var utcStartTime = localStartTime.utc().format();
+  var localEndTime = moment(end.val(), "h:mm A");
+  var utcEndTime = localEndTime.utc().format();
   return {
-    start: start.val(),
-    end: end.val(),
-    date: date.val(),
+    start: utcStartTime,
+    end: utcEndTime,
+    date: startDateTime,
     comments: comments.val(),
     scheduleId: idOfSchedule.val()
   };
@@ -72,11 +78,15 @@ function postData (){
 
 function makeScheduleSlots (data){
   data.targetSchedule.timeSlots.forEach(function (slot){
+    var offset = moment().format('ZZ');
+    var startTime = moment(slot.startTime).utcOffset(offset).format("h:mm A");
+    var endTime = moment(slot.endTime).utcOffset(offset).format("h:mm A");
+    var dateTime = moment(slot.date).utcOffset(offset).format("MM/DD/YYYY");
     var compiled = _.template("<div class='radio' id='slot'><label><input class='radio-btn' type='radio' name='optradio' data-id='<%= id %>' data-scheduleId='<%= scheduleId %>' data-studentId='<%= studentId %>' data-active='<%= active %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><p>Start Time: <%= start %></p><p>End Time: <%= end %> </p><p>Date: <%= date %></p><p>Comments: <%= comments %></p></label></div>");
     var newSlot = compiled({
-      'start': slot.startTime,
-      'end': slot.endTime,
-      'date': slot.date,
+      'start': startTime,
+      'end': endTime,
+      'date': dateTime,
       'comments': slot.comments,
       'id': slot.id,
       'scheduleId': slot.scheduleId,
@@ -98,11 +108,15 @@ function makeScheduleSlots (data){
 
 function makeAdminSlots (data){
   data.targetSchedule.timeSlots.forEach(function (slot){
+    var offset = moment().format('ZZ');
+    var startTime = moment(slot.startTime).utcOffset(offset).format("h:mm A");
+    var endTime = moment(slot.endTime).utcOffset(offset).format("h:mm A");
+    var dateTime = moment(slot.date).utcOffset(offset).format("MM/DD/YYYY");
     var compiled = _.template("<div id='slot' data-id='<%= id %>' data-scheduleId='<%= scheduleId %>' data-active='<%= active %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><p>Start Time: <%= start %></p><p>End Time: <%= end %> </p><p>Date: <%= date %></p><p>Comments: <%= comments %></p></label></div>");
     var newSlot = compiled({
-      'start': slot.startTime,
-      'end': slot.endTime,
-      'date': slot.date,
+      'start': startTime,
+      'end': endTime,
+      'date': dateTime,
       'comments': slot.comments,
       'id': slot.id,
       'scheduleId': slot.scheduleId,
@@ -127,7 +141,7 @@ function cancelSlot() {
 }
 
 function sendSlot () {
-  this.dataset['socketid'] = getCookie('socketid');
+  this.dataset.socketid = getCookie('socketid');
   socket.send('selectSlot', {dataset: this.dataset, username: username.val()});
 }
 
@@ -138,6 +152,18 @@ function sendDate() {
   socket.send('timeZone', dateAndTime);
 }
 
+function setDatePicker() {
+  $('#datetimepicker1').datetimepicker({
+    format: 'LT'
+  });
+  $('#datetimepicker2').datetimepicker({
+    format: 'LT'
+  });
+  $('#datetimepicker3').datetimepicker({
+    format: 'L'
+  });
+}
+
 $('document').ready(function (){
   submit.on('click', postData);
   adminPageSlots.delegate('#delete', 'click', deleteSlot);
@@ -146,16 +172,6 @@ $('document').ready(function (){
   scheduleingPageSlots.delegate('.radio-btn', 'click', sendSlot);
   makeScheduleSlots(schedule);
   makeAdminSlots(schedule);
-  $(function() {
-    $('#datetimepicker1').datetimepicker({
-      format: 'LT'
-    });
-    $('#datetimepicker2').datetimepicker({
-      format: 'LT'
-    });
-    $('#datetimepicker3').datetimepicker({
-      format: 'L'
-    });
-  });
+  setDatePicker();
   sendDate();
 });
