@@ -78,15 +78,14 @@ describe('Server', () => {
         end: "2pm",
         date: "1/2/16",
         comments: "meet with ian",
-        scheduleId: "97de4a6ac8bea261037eae55794218b612730aec"
+        scheduleId: "8cbeb503e61d48a848b3d07d765ba768d6f363e2"
       };
 
       this.request.post('/admin-dashboard/slots', { form: slot }, function (error, response) {
       });
 
-      this.request.get('/admin-dashboard/97de4a6ac8bea261037eae55794218b612730aec', function (error, response) {
-        assert(response.body.includes("3pm"), "it should say the start");
-        assert(response.body.includes("1/2/16"), "it should say the data");
+      this.request.get('/admin-dashboard/3496764406d4dda0923c09b844535a2e98044245', function (error, response) {
+        assert(response.body.includes("Yo mama"), "it should say the comments");
         assert.equal(response.statusCode, 200);
         done();
       });
@@ -96,9 +95,9 @@ describe('Server', () => {
 
   describe('GET /scheduling-page/schedule-id', () => {
     it('should return a 200', (done) => {
-      this.request.get('/scheduling-page/0166991a734ae5b1ef7a5cb31d52cbb595182899', function (error, response) {
+      this.request.get('/scheduling-page/db954980118fe485f1acfa9dd715a20e6a22be4f', function (error, response) {
 
-        assert(response.body.includes("Start Time: a"), "it shoud say the start time");
+        assert(response.body.includes("Yo mama"), "it shoud say the comments");
         assert.equal(response.statusCode, 200);
         done();
       });
