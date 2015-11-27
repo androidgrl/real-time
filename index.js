@@ -26,21 +26,21 @@ app.use(ejsLayouts);
 app.set("views","./views");
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/', function (req, res){
+app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 
-app.get('/admin-dashboard', function (req, res){
+app.get('/admin-dashboard', function (req, res) {
   var schedule = new Schedule();
   var id = schedule.id;
   updateRedis(schedule, id);
   res.redirect('/admin-dashboard/' + id);
 });
 
-app.get('/admin-dashboard/:id', function (req, res){
+app.get('/admin-dashboard/:id', function (req, res) {
   var id = req.params.id;
   var host = req.headers.host;
-  client.hgetall('schedules', function (err, schedules){
+  client.hgetall('schedules', function (err, schedules) {
     var targetSchedule = schedules[id];
     res.render('admin-dashboard', {
       host: host,
@@ -50,9 +50,9 @@ app.get('/admin-dashboard/:id', function (req, res){
   });
 });
 
-app.get('/scheduling-page/:id', function (req, res){
+app.get('/scheduling-page/:id', function (req, res) {
   var id = req.params.id;
-  client.hgetall('schedules', function (err, schedules){
+  client.hgetall('schedules', function (err, schedules) {
     var targetSchedule = _.find(schedules, function (schedule) {
       return JSON.parse(schedule).schedulingPageId === req.params.id;
     });
@@ -63,7 +63,7 @@ app.get('/scheduling-page/:id', function (req, res){
 });
 
 function addSlotToSchedule(scheduleId, slot, res) {
-  client.hgetall('schedules', function (err, schedules){
+  client.hgetall('schedules', function (err, schedules) {
     var targetSchedule = JSON.parse(schedules[scheduleId]);
     targetSchedule.timeSlots.push(slot);
     updateRedis(targetSchedule, scheduleId);
@@ -71,7 +71,7 @@ function addSlotToSchedule(scheduleId, slot, res) {
   });
 }
 
-app.post('/admin-dashboard/slots', function (req, res){
+app.post('/admin-dashboard/slots', function (req, res) {
   var slot = new Slot();
   slot.updateSlotAttributes(req, slot);
   var scheduleId = req.body.scheduleId;
@@ -105,18 +105,18 @@ function updateSelectedSlot(targetTimeSlot, message) {
   targetTimeSlot.username = message.username;
 }
 
-io.on('connection', function (socket){
+io.on('connection', function (socket) {
   socket.emit('socketId', socket.id);
 
-  socket.on('message', function (channel, message){
-    if (channel==='timeZone'){
+  socket.on('message', function (channel, message) {
+    if (channel==='timeZone') {
       io.sockets.emit('broadcastTime', message);
     }
-    if (channel==='slots'){
+    if (channel==='slots') {
       io.sockets.emit('updateSlots' + message.scheduleId, message);
     }
     if (channel==='selectSlot') {
-      client.hgetall('schedules', function (err, schedules){
+      client.hgetall('schedules', function (err, schedules) {
         var targetSchedule = JSON.parse(schedules[message.dataset.scheduleid]);
         var targetTimeSlot = findTargetTimeSlot(targetSchedule, message.dataset.id);
         var timeSlotsAlreadyTaken = _.filter(targetSchedule.timeSlots, function (slot) {
@@ -131,7 +131,7 @@ io.on('connection', function (socket){
       });
     }
     if (channel === 'deleteSlot') {
-      client.hgetall('schedules', function (err, schedules){
+      client.hgetall('schedules', function (err, schedules) {
         var targetSchedule = JSON.parse(schedules[message.scheduleid]);
         var updatedTimeSlots = _.reject(targetSchedule.timeSlots, function (slot) {
           return slot.id === message.id;
@@ -142,7 +142,7 @@ io.on('connection', function (socket){
       });
     }
     if (channel === 'cancelSlot') {
-      client.hgetall('schedules', function (err, schedules){
+      client.hgetall('schedules', function (err, schedules) {
         var targetSchedule = JSON.parse(schedules[message.scheduleid]);
         var targetTimeSlot = findTargetTimeSlot(targetSchedule, message.id);
         clearDeselectedSlot(targetTimeSlot);
@@ -164,8 +164,8 @@ function updateRedis(targetSchedule, id) {
   client.hmset('schedules', id, JSON.stringify(targetSchedule));
 }
 
-if(!module.parent){
-  http.listen(process.env.PORT || 3000, function (){
+if(!module.parent) {
+  http.listen(process.env.PORT || 3000, function () {
     console.log('Your server is up and running on Port 3000. Good job!');
   });
 }
