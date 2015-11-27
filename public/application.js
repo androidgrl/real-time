@@ -33,6 +33,10 @@ socket.on('socketId', function(socketId) {
   }
 });
 
+socket.on('broadcastTime', function (date) {
+  console.log(date, "**************from the browser");
+});
+
 function getCookie(cname) {
   var name = cname + '=';
   var ca = document.cookie.split(';');
@@ -127,6 +131,13 @@ function sendSlot () {
   socket.send('selectSlot', {dataset: this.dataset, username: username.val()});
 }
 
+function sendDate() {
+  const current = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
+  const timezone = jstz.determine().name();
+  const dateAndTime = current + " " + timezone;
+  socket.send('timeZone', dateAndTime);
+}
+
 $('document').ready(function (){
   submit.on('click', postData);
   adminPageSlots.delegate('#delete', 'click', deleteSlot);
@@ -145,6 +156,6 @@ $('document').ready(function (){
     $('#datetimepicker3').datetimepicker({
       format: 'L'
     });
-
   });
+  sendDate();
 });

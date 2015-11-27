@@ -8,8 +8,6 @@ const bodyParser = require('body-parser');
 const Schedule = require('./lib/schedule');
 const Slot = require('./lib/slot');
 const _ = require('lodash');
-const moment = require('moment-timezone');
-const jstz = require('jstz');
 
 if (process.env.REDISTOGO_URL) {
   var rtg   = require("url").parse(process.env.REDISTOGO_URL);
@@ -93,21 +91,6 @@ io.on('connection', function (socket){
   console.log('A user has connected.');
   console.log(io.engine.clientsCount + ' user(s) now connected.');
 
-  const date = moment("12-25-1995", "MM-DD-YYYY").format("DD/MM/YYYY");
-  const time = moment("11:00 PM12-12-2015", "h:mm AMM-DD-YYYY").format("dddd, MMMM Do YYYY, h:mm:ss a");
-  const offset = moment().format('Z');
-  const timezone = jstz.determine().name();
-  const fulldate = moment("12-25-1995", "MM-DD-YYYY").format("dddd, MMMM Do YYYY, h:mm:ss a");
-  const current = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
-  console.log(date);
-  console.log(offset);
-  console.log(timezone);
-  console.log(fulldate + " " + timezone);
-  console.log(current + " " + timezone);
-  const theSocketsTime = current + " " + timezone;
-
-  io.sockets.emit('timeZone', theSocketsTime);
-
   socket.emit('socketId', socket.id);
 
   socket.on('disconnect', function (){
@@ -115,6 +98,9 @@ io.on('connection', function (socket){
   });
 
   socket.on('message', function (channel, message){
+    if (channel==='timeZone'){
+      io.sockets.emit('broadcastTime', message);
+    }
     if (channel==='slots'){
       io.sockets.emit('updateSlots' + message.scheduleId, message);
     }
