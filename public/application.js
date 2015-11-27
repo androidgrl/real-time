@@ -99,14 +99,7 @@ function makeScheduleSlots (data) {
 
     if (!slot.active) {
       if (slot.studentId === getCookie('socketid')) {
-        var startTimeObject = moment(slot.startTime).utc();
-        var endTimeObject = moment(slot.endTime).utc();
-        var googleStartDay = startTimeObject.format("YYYYMMDD");
-        var googleEndDay = endTimeObject.format("YYYYMMDD");
-        var googleStartTime = startTimeObject.format("hhmmss");
-        var googleEndTime = startTimeObject.format("hhmmss");
-        var googleCombinedTimes = googleStartTime + googleEndTime;
-        var googleDateTime = googleStartDay + "T" + googleStartTime + "Z/" + googleEndDay + "T" + googleEndTime + "Z";
+        googleDateTime = parseGoogleDateTime(slot);
         $("input[data-id='" + slot.id +"']").parent().parent().addClass('label-green');
         $("input[data-id='" + slot.id +"']").parent().append("<button class='btn btn-danger' id='cancel' data-id='" + slot.id + "' data-scheduleId='" + slot.scheduleId + "'>Cancel Reservation</button>");
         $("input[data-id='" + slot.id +"']").parent().append("<a id='save' class='btn btn-primary' target='_blank' href='https://calendar.google.com/calendar/render?action=TEMPLATE&text=Appointment&dates=" + googleDateTime + "&details=" + slot.comments + "&=true&output=xml#eventpage_6'>Save To Google Calendar</a>");
@@ -115,6 +108,17 @@ function makeScheduleSlots (data) {
       }
     }
   });
+}
+
+function parseGoogleDateTime(slot) {
+  var startTimeObject = moment(slot.startTime).utc();
+  var endTimeObject = moment(slot.endTime).utc();
+  var googleStartDay = startTimeObject.format("YYYYMMDD");
+  var googleEndDay = endTimeObject.format("YYYYMMDD");
+  var googleStartTime = startTimeObject.format("hhmmss");
+  var googleEndTime = endTimeObject.format("hhmmss");
+  var googleDateTime = googleStartDay + "T" + googleStartTime + "Z/" + googleEndDay + "T" + googleEndTime + "Z";
+  return googleDateTime;
 }
 
 function makeAdminSlots (data) {
