@@ -41,7 +41,7 @@ app.get('/admin-dashboard/:id', function (req, res) {
   var id = req.params.id;
   var host = req.headers.host;
   client.hgetall('schedules', function (err, schedules) {
-    var targetSchedule = schedules[id];
+    var targetSchedule = schedules[id]; // JSON object
     res.render('admin-dashboard', {
       host: host,
       id: id,

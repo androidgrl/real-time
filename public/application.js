@@ -66,26 +66,23 @@ function checkFields() {
 function postData () {
   if (checkFields()) {
     $.post('/admin-dashboard/slots',
-           formData(),
-           function(data) {
-             socket.send('slots', data);
-             start.val('');
-             end.val('');
-             date.val('');
-             comments.val('');
-           });
+	   formData(),
+	   function(data) {
+	     socket.send('slots', data);
+	     start.val('');
+	     end.val('');
+	     date.val('');
+	     comments.val('');
+	   });
   }
 }
 
-function makeScheduleSlots (data) {
-  var timezone = jstz.determine().name();
-  data.targetSchedule.timeSlots.forEach(function (slot) {
-    var offset = moment().format('ZZ');
-    var startTime = moment(slot.startTime).utcOffset(offset).format("h:mm A") + " " + timezone;
-    var endTime = moment(slot.endTime).utcOffset(offset).format("h:mm A") + " " + timezone;
-    var dateTime = moment(slot.date).utcOffset(offset).format("MM/DD/YYYY");
-    var compiled = _.template("<div class='radio' id='slot'><label><input class='radio-btn' type='radio' name='optradio' data-id='<%= id %>' data-scheduleId='<%= scheduleId %>' data-studentId='<%= studentId %>' data-active='<%= active %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><p>Start Time: <%= start %></p><p>End Time: <%= end %> </p><p>Date: <%= date %></p><p>Comments: <%= comments %></p></label></div>");
-    var newSlot = compiled({
+function readSlotAttributes(slot) {
+  var offset = moment().format('ZZ');
+  var startTime = moment(slot.startTime).utcOffset(offset).format("h:mm A") + " " + timezone;
+  var endTime = moment(slot.endTime).utcOffset(offset).format("h:mm A") + " " + timezone;
+  var dateTime = moment(slot.date).utcOffset(offset).format("MM/DD/YYYY");
+  return {
       'start': startTime,
       'end': endTime,
       'date': dateTime,
@@ -94,8 +91,18 @@ function makeScheduleSlots (data) {
       'scheduleId': slot.scheduleId,
       'active': slot.active,
       'studentId': slot.studentId
-    });
-    scheduleingPageSlots.append(newSlot);
+    }
+}
+
+var slotTemplate = _.template("<div class='radio' id='slot'><label><input class='radio-btn' type='radio' name='optradio' data-id='<%= id %>' data-scheduleId='<%= scheduleId %>' data-studentId='<%= studentId %>' data-active='<%= active %>' data-start='<%= start %>' data-end='<%= end %>' data-date='<%= date %>' data-comments='<%= comments %>'><p>Start Time: <%= start %></p><p>End Time: <%= end %> </p><p>Date: <%= date %></p><p>Comments: <%= comments %></p></label></div>");
+
+function makeScheduleSlots (data) {
+  var timezone = jstz.determine().name();
+  data.targetSchedule.timeSlots.forEach(function (slot) {
+    var slotAttributes = readSlotAttributes(slot);
+    var newSlotMarkup = slotTemplate(slotAttributes);
+
+    scheduleingPageSlots.append(newSlotMarkup);
 
     if (!slot.active) {
       if (slot.studentId === getCookie('socketid')) {
