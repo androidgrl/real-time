@@ -114,9 +114,7 @@ io.on('connection', function (socket){
     if (channel==='selectSlot') {
       client.hgetall('schedules', function (err, schedules){
         var targetSchedule = JSON.parse(schedules[message.dataset.scheduleid]);
-        var targetTimeSlot = _.find(targetSchedule.timeSlots, function (slot) {
-          return slot.id === message.dataset.id;
-        });
+        var targetTimeSlot = findTargetTimeSlot(targetSchedule, message.dataset.id);
         var timeSlotsAlreadyTaken = _.filter(targetSchedule.timeSlots, function (slot) {
           return slot.studentId;
         });
@@ -142,9 +140,7 @@ io.on('connection', function (socket){
     if (channel === 'cancelSlot') {
       client.hgetall('schedules', function (err, schedules){
         var targetSchedule = JSON.parse(schedules[message.scheduleid]);
-        var targetTimeSlot = _.find(targetSchedule.timeSlots, function (slot) {
-          return slot.id === message.id;
-        });
+        var targetTimeSlot = findTargetTimeSlot(targetSchedule, message.id);
         targetTimeSlot.studentId = null;
         targetTimeSlot.active = true;
         updateRedis(targetSchedule, message.scheduleid);
@@ -153,6 +149,13 @@ io.on('connection', function (socket){
     }
   });
 });
+
+function findTargetTimeSlot(targetSchedule, id) {
+  var targetTimeSlot = _.find(targetSchedule.timeSlots, function (slot) {
+    return slot.id === id;
+  });
+  return targetTimeSlot;
+}
 
 function updateRedis(targetSchedule, id) {
   client.hmset('schedules', id, JSON.stringify(targetSchedule));
