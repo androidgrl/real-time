@@ -133,7 +133,9 @@ function sendSlot () {
 
 function sendDate() {
   const current = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
-  socket.send('timeZone', current);
+  const timezone = jstz.determine().name();
+  const dateAndTime = current + " " + timezone;
+  socket.send('timeZone', dateAndTime);
 }
 
 $('document').ready(function (){
