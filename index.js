@@ -62,15 +62,6 @@ app.get('/scheduling-page/:id', function (req, res){
   });
 });
 
-function createNewSlot(req, slot) {
-  slot.startTime = req.body.start;
-  slot.endTime = req.body.end;
-  slot.date = req.body.date;
-  slot.comments = req.body.comments;
-  slot.scheduleId = req.body.scheduleId;
-  slot.username = req.body.username;
-}
-
 function addSlotToSchedule(scheduleId, slot, res) {
   client.hgetall('schedules', function (err, schedules){
     var targetSchedule = JSON.parse(schedules[scheduleId]);
@@ -82,7 +73,7 @@ function addSlotToSchedule(scheduleId, slot, res) {
 
 app.post('/admin-dashboard/slots', function (req, res){
   var slot = new Slot();
-  createNewSlot(req, slot);
+  slot.updateSlotAttributes(req, slot);
   var scheduleId = req.body.scheduleId;
   addSlotToSchedule(scheduleId, slot, res);
 });

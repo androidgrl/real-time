@@ -1,4 +1,5 @@
 const socket = io();
+
 const start = $('#start');
 const end = $('#end');
 const date = $('#date');
