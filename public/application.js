@@ -11,13 +11,6 @@ const radioButtons = $('.radio-btn');
 const submit = $('#submit');
 const deleteButton = $('#delete');
 
-socket.on('connect', function (){
-  console.log(socket.id, 'socket id');
-});
-
-socket.on('timeZone', function(time) {
-  console.log(time);
-});
 socket.on('updateSlots' + scheduleId, function (data){
   scheduleingPageSlots.html('');
   makeScheduleSlots(data);
@@ -33,17 +26,13 @@ socket.on('socketId', function(socketId) {
   }
 });
 
-socket.on('broadcastTime', function (date) {
-  console.log(date, "**************from the browser");
-});
-
 function getCookie(cname) {
   var name = cname + '=';
   var ca = document.cookie.split(';');
   for(var i=0; i<ca.length; i++) {
     var c = ca[i];
-    while (c.charAt(0)==' ') c = c.substring(1);
-    if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+    while (c.charAt(0) ===' ') c = c.substring(1);
+    if (c.indexOf(name) === 0) return c.substring(name.length,c.length);
   }
   return '';
 }
@@ -64,16 +53,27 @@ function formData (){
   };
 }
 
+function checkFields() {
+  if (start.val() === "" || end.val() === "" || date.val() === "") {
+    alert("Please fill in all of the fields. ^_^");
+    return false;
+  } else {
+    return true;
+  }
+}
+
 function postData (){
-  $.post('/admin-dashboard/slots',
-         formData(),
-         function(data){
-           socket.send('slots', data);
-           start.val('');
-           end.val('');
-           date.val('');
-           comments.val('');
-         });
+  if (checkFields()) {
+    $.post('/admin-dashboard/slots',
+           formData(),
+           function(data){
+             socket.send('slots', data);
+             start.val('');
+             end.val('');
+             date.val('');
+             comments.val('');
+           });
+  }
 }
 
 function makeScheduleSlots (data){
@@ -98,8 +98,17 @@ function makeScheduleSlots (data){
 
     if (!slot.active) {
       if (slot.studentId === getCookie('socketid')) {
+        var startTimeObject = moment(slot.startTime).utc();
+        var endTimeObject = moment(slot.endTime).utc();
+        var googleStartDay = startTimeObject.format("YYYYMMDD");
+        var googleEndDay = endTimeObject.format("YYYYMMDD");
+        var googleStartTime = startTimeObject.format("hhmmss");
+        var googleEndTime = startTimeObject.format("hhmmss");
+        var googleCombinedTimes = googleStartTime + googleEndTime;
+        var googleDateTime = googleStartDay + "T" + googleStartTime + "Z/" + googleEndDay + "T" + googleEndTime + "Z";
         $("input[data-id='" + slot.id +"']").parent().parent().addClass('label-green');
         $("input[data-id='" + slot.id +"']").parent().append("<button class='btn btn-danger' id='cancel' data-id='" + slot.id + "' data-scheduleId='" + slot.scheduleId + "'>Cancel Reservation</button>");
+        $("input[data-id='" + slot.id +"']").parent().append("<a id='save' class='btn btn-primary' target='_blank' href='https://calendar.google.com/calendar/render?action=TEMPLATE&text=Appointment&dates=" + googleDateTime + "&details=" + slot.comments + "&=true&output=xml#eventpage_6'>Save To Google Calendar</a>");
       } else {
         $("input[data-id='" + slot.id +"']").parent().parent().addClass('label-grey');
       }
@@ -109,7 +118,6 @@ function makeScheduleSlots (data){
 
 function makeAdminSlots (data){
   var timezone = jstz.determine().name();
-  console.log(timezone, "**************timezone");
   data.targetSchedule.timeSlots.forEach(function (slot){
     var offset = moment().format('ZZ');
     var startTime = moment(slot.startTime).utcOffset(offset).format("h:mm A") + " " + timezone;
@@ -143,16 +151,19 @@ function cancelSlot() {
   socket.send('cancelSlot', this.dataset);
 }
 
-function sendSlot () {
-  this.dataset.socketid = getCookie('socketid');
-  socket.send('selectSlot', {dataset: this.dataset, username: username.val()});
+function checkNameField() {
+  if (username.val() === "") {
+    alert("Please fill in name");
+    return false;
+  } else {
+    return true;
+  }
 }
-
-function sendDate() {
-  const current = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
-  const timezone = jstz.determine().name();
-  const dateAndTime = current + " " + timezone;
-  socket.send('timeZone', dateAndTime);
+function sendSlot () {
+  if (checkNameField()) {
+    this.dataset.socketid = getCookie('socketid');
+    socket.send('selectSlot', {dataset: this.dataset, username: username.val()});
+  }
 }
 
 function setDatePicker() {
@@ -176,5 +187,4 @@ $('document').ready(function (){
   makeScheduleSlots(schedule);
   makeAdminSlots(schedule);
   setDatePicker();
-  sendDate();
 });
