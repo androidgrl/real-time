@@ -109,9 +109,6 @@ io.on('connection', function (socket) {
   socket.emit('socketId', socket.id);
 
   socket.on('message', function (channel, message) {
-    if (channel==='timeZone') {
-      io.sockets.emit('broadcastTime', message);
-    }
     if (channel==='slots') {
       io.sockets.emit('updateSlots' + message.scheduleId, message);
     }

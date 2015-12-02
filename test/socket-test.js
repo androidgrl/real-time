@@ -1,7 +1,7 @@
 const assert = require('assert');
 const io = require('socket.io-client');
 
-var socketURL = 'http://0.0.0.0:5000';
+var socketURL = 'http://localhost:9876';
 
 var options ={
   transports: ['websocket'],
@@ -13,13 +13,32 @@ describe("Real Time App",function(){
 
     var client1 = io.connect(socketURL, options);
 
-    client1.on('connect', function(data){
-      client1.emit('socketId', 'lllrrrj1l3krj;j');
+    var client2 = io.connect(socketURL, options);
 
-      client1.on('socketId', function(data){
-          assert.equal('lllrrrj1l3krj;j', data);
-          client1.disconnect();
-          done();
+    client1.send('socketId', 'lllrrrj1l3krj;j');
+
+    client2.on('socketId', function(data){
+      assert.equal('lllrrrj1l3krj;j', data);
+      client1.disconnect();
+      client2.disconnect();
+      done();
+    });
+  });
+
+  it('should send selected slot', function() {
+
+    var client1 = io.connect(socketURL, options);
+
+    client1.on('connect', function(data){
+      console.log("connected***********************************");
+      var client2 = io.connect(socketURL, options);
+
+      client1.send('selectSlot', {dataset: {socketid: "123", scheduleid: "345", id: "789"}, username: "Bob"});
+
+      client2.on('selectSlot', function(data){
+        assert.deepEqual("{dataset: {socketid: '123', scheduleid: '345', id: '789'}, username: 'Bob}", data);
+        client1.disconnect();
+        client2.disconnect();
       });
     });
   });
